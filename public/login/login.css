@@ -1,0 +1,20 @@
+#formContent{
+}
+#head h2{
+    text-shadow: 0 0 10px #FFFFFF;
+  }
+#form-logo{
+    width: 50%;
+  }
+  #head{
+  width: 100%;
+  }
+  /************* Font */
+  input{
+    font-size: 0.9vw !important;
+  }
+  @media screen and (max-width: 1300px) {
+    input{
+        font-size: 13px !important;
+      }
+    }

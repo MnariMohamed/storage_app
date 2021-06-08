@@ -1,0 +1,63 @@
+#start-content {
+   margin-left: max(11%, 150px)
+}
+#sidebar1{
+   background-color: white;
+   color: #3b3b3b;
+   font-size: 1vw;
+z-index: 0;
+position: fixed !important;
+top: 0;
+overflow: revert;
+}
+#setting-drop{
+   width: max-content;
+   text-align: center;
+}
+#setting-drop .drop-content{
+   position: absolute;
+   left: 100%;
+   top:0;
+   width: max-content;
+   height: 100%;
+}
+#sidecontent a{
+   text-align: center;
+
+}
+#dropdownside{
+   color: #3b3b3b;
+   
+}
+#sidebar1 a:hover{
+   color: #070707 !important;
+   font-weight: bold;
+   font-size: 1.1vw;
+}
+#glogo{
+   width: 90%;
+   margin: auto;
+   display: block;
+   margin-top: 2vh;
+   background-color: white;
+   padding: 5%;
+}
+
+#sidecontent{
+   margin-top: 50%;
+text-align: center;
+}
+
+#back-btn{
+   width: 1.5vw;
+   float: left;
+   margin: 1vw;
+}
+
+/**********FONT*/
+@media screen and (max-width: 1400px) {
+   #sidecontent {
+     font-size: 14px;
+   }
+   }
+ 

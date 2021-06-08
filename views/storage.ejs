@@ -1,0 +1,51 @@
+<%- include('./partials/header') -%>
+<%- include('./partials/sidebar') -%>
+<link rel="stylesheet" href="/storage/storage.css">
+
+<div id="storage">
+<div id="contain-s">
+  <div class="alert alert-warning" role="alert" id="progress" style="text-align: center;margin: auto;"></div>
+            <div id="row-file" class="row">
+                <input name="uploadedFile" class="form-control" type="file" id="form-file">
+                <input id="uploadNow" type="submit" value="UPLOAD">
+               <h3 id="av_sp">
+                <span>free space:</span> <%= currentUser.free_space.toFixed(2) %>/<%= currentUser.capacity %></h3>GB
+              </div>
+              
+              <div id="div-table">
+                <table id="files-table" class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">File name</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Size</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      <% for(var i=0;i<the_files.length;i++){ %>
+                    <tr id="<%=the_files[i].name%>">
+                      <td>
+                        <a href="/download_file/<%=currentUser.folder_name%>/<%=the_files[i].name%>">
+                          <%= the_files[i].name %>
+                        </a>
+                      </td>
+                      <td><%= the_files[i].date.toUTCString() %></td>
+                      <td><%= the_files[i].size.toFixed(4) %> GB</td>
+                      <td><button onclick="pre_delete_file('<%=currentUser.folder_name%>/<%=the_files[i].name%>','<%=currentUser.username%>');" id="delete_f" class="btn btn-danger">Delete</button></td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+
+
+      <span id="username_sp" style="display: none;"><%=currentUser.username%></span>
+      <span id="free_sp" style="display: none;"><%=currentUser.free_space%></span>
+</div>
+</div>
+
+
+<script src="/storage/storage.js"></script>
+<%- include('./partials/sidebarfooter') -%>
+<%- include('./partials/footer') -%>

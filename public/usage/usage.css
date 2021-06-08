@@ -1,0 +1,82 @@
+#usage{
+    background-color: white;
+    border-radius: 1vmax;
+    padding: 1%;
+    margin-top: 1vh;
+    min-height: 90vh;
+}
+
+details{
+    margin-bottom: 1%;
+}
+#deleted_details #delete_all{
+margin: auto;
+width: max-content;
+text-align: center;
+display: block;
+font-size: 0.9vmax;
+margin-top: 0;
+}
+/**** extUsage */
+/* Details Styling
+---------------------------- */
+details, summary {
+}
+details summary::-webkit-details-marker {
+	display: none;
+}
+details summary {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 1%;
+	outline: none;
+	cursor: pointer;
+	font-size: 1.1vmax;
+	font-weight: 400;
+	line-height: 1.2;
+	border-bottom: 0.1vmax solid #000;
+    width: max-content;
+}
+details[open] summary {
+	background: #000;
+	color: #fff;
+}
+.in_sumary{
+	background-color: white !important;
+	color: #000 !important;
+}
+details summary:before,
+details summary:after {
+	font-family: "FontAwesome";
+}
+details summary:before {
+  content:"\f107"; 
+	padding-right: 1.5rem;
+}
+details[open] summary:before {
+	content:"\f106";
+}
+details[open] {
+	border-bottom: 1px solid #000;
+}
+details > div {
+	padding: 1.5rem 1.5rem .5rem;
+	background: #f2f2f2;
+}
+details > div > * {
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
+
+
+
+/***** screeb */
+@media screen and (max-width: 1300px) {
+    details summary {
+font-size: medium;
+    }
+	#deleted_details #delete_all{
+		font-size: small;
+	}
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/header/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/header/header.css">
+    <link rel="stylesheet" href="/header/app.css">
+    <script src="/header/jquery.min.js"></script>
+    <title>EIATECH Solution</title>
+</head>
+<body>
+    <!-- Just an image -->
+<nav id="head" class="navbar navbar-light">
+    <div id="headin" class="">
+      <p id="title">Network Storage</p> 
+
+      <%if(currentUser){%>
+      <div class="headimg">
+        <img src="/images/icons/user.svg" alt="" class="align-middle">
+<p><%= currentUser.username %></p>
+<a href="/logout" class="btn btn-danger">Logout</a>
+      </div>
+     <% }%>
+
+    </div>
+  </nav>
+
+
+    

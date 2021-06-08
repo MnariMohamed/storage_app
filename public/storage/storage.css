@@ -1,0 +1,114 @@
+body::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    height: 100vh;
+  }
+  
+  #storage{
+padding-top: 1%;
+  /*  margin-top: 1vh;
+    min-height: 90vh;*/
+}
+#contain-s{
+    padding: 1%;
+    border-radius: 1vmax;
+    background-color: white;
+    height: 98%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+#progress{
+    display: none;
+    width: 50%;
+    font-size: 0.9vmax;
+}
+#div-table{
+    display: block;
+    overflow: hidden;
+}
+#contain-s:hover #div-table{
+    overflow-y: auto;
+}
+#storage #files-table{
+    font-size: 0.9vmax;
+    min-width: max-content;
+width: 90%;
+max-width: 100%;
+margin: auto;
+}
+#row-file{
+    flex-wrap: nowrap;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+#row-file input{
+width: max-content;
+margin: 1%;
+}
+#row-file span{
+width: max-content;
+}
+#av_sp{
+    margin-left: 10%;
+    align-self: center;
+    width: max-content;
+    font-size: 1vmax;
+}
+#av_sp span{
+font-size: 0.9vmax;
+}
+#form-file{
+    width: max-content;
+}
+
+
+    /*********  scroll bar**/
+    #div-table::-webkit-scrollbar {
+        width: 0.5vmax;
+        border-radius: 20px;
+      }
+      
+      /* Track */
+      #div-table::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+        border-radius: 20px;
+      }
+       
+      /* Handle */
+      #div-table::-webkit-scrollbar-thumb {
+        background: #8598AD; 
+        border-radius: 20px;
+      }
+      
+      /* Handle on hover */
+      #div-table::-webkit-scrollbar-thumb:hover {
+        background: #070707; 
+        border-radius: 20px;
+      }
+  
+
+
+
+/******** SCREEN **/
+@media screen and (max-width: 1300px) {
+    #progress{
+font-size: small;
+    }
+    #storage #files-table{
+font-size: small;
+width: 100%;
+    }
+    #av_sp{
+font-size: medium ;
+    }
+    #av_sp span{
+        font-size: smaller;
+        }
+}

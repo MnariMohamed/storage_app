@@ -1,0 +1,50 @@
+<%- include('../partials/header') -%>
+<%- include('../partials/sidebar') -%>
+<link rel="stylesheet" href="/user/user.css">
+
+<div class="background-container" class="card">
+
+<div id="users-table" class=""> 
+    <div class="row custyle middle">
+        <div class="">
+            <table class="table table-striped custab">
+                <thead>
+                <a href="/register" class="btn btn-greeng btn-xs pull-right"><b>+</b> Add new User</a>
+                    <tr>
+                        <th>User</th>
+                        <th>Date Added</th>
+                        <th>Storage Limit</th>
+                        <% if(currentUser.username=="admin") { %>
+                            <th class="text-center">Action</th>
+                            <% } %>
+                    </tr>
+                </thead>
+                <% var i=0; users.forEach(function(user){ %>                
+                        <tr>
+                            <td id="username<%= i %>" ><%= user.username %></td>
+                            <td><%= moment(user._id.getTimestamp()).format("DD-MM-YYYY, h:mm a"); %></td>
+                        <td> 
+                            <% if(user.username!="admin") {%>
+                            <input id="<%=user.username%>-capacity" type='number' value="<%= user.capacity %>"/>
+                            <% } %>
+                        </td>
+
+                        <% if(currentUser.username=="admin") { %>
+                            <td class="text-center deleteB"> <% if(user.username!="admin") {%>
+                                <a id="<%=user.username%>" style="background-color: #00B859;color: white;" class='btn btn-xs'><span class="glyphicon glyphicon-save"></span>Save</a>
+                                 <a id=<%=i%> class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Del</a>
+                                 <% } %></td>
+                        <% } %>
+                    
+                    </tr>
+                <%  i++;  })  %>
+                </table>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<%- include('../partials/sidebarfooter') -%>
+<script src="/user/users.js"></script>
+<%- include('../partials/footer') -%>

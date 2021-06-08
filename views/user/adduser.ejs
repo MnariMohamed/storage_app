@@ -1,0 +1,57 @@
+<%- include('../partials/header') -%>
+<%- include('../partials/sidebar') -%>
+<link rel="stylesheet" href="/user/user.css">
+
+<div class="background-container" class="card">
+
+<div id="adduser" class="w-50 top-m shadow-lg p-3 mb-5 rounded">
+<div class="mb-3 row">
+    <label for="inputUsername" class="col-sm-3 col-form-label">Username</label>
+    <div class="col-sm-9">
+      <input onkeypress="return event.charCode != 32" type="text" class="form-control" id="inputUsername">
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
+    <div class="col-sm-9">
+      <input type="password" class="form-control" id="inputPassword">
+    </div>
+  </div>
+
+  <div id="spaces" class="mb-3 row">
+    <!--label for="free_d" class="col-sm-3 col-form-label">Free Space in Disk:</label>
+    <button class="col-sm-3">
+      <%= free_disk_sp_G.toFixed(4) %> GB
+    </button-->  
+    <label for="free_d" class="col-sm-3 col-form-label" style="">Allowed space:</label>
+    <button class="col-sm-3">
+      <%= allowed_storage.toFixed(4) %> GB
+    </button>  
+  </div>
+  
+  <div class="mb-3 row">
+           <label for="capacity" class="col-sm-3 col-form-label">Storage Limit</label>
+    <div class="col-sm-3">
+      <input type="text" class="form-control" id="capacity" value="0">
+    </div>   
+    GB
+  </div>
+
+  <div id="useradded" class="col-sm-7 alert alert-success" role="alert">
+    User added successfuly
+  </div>
+  <div id="userfailed" class="col-sm-7 alert alert-danger" role="alert">
+    User not added
+  </div>
+  <br/>
+  <button id="addbutton" type="button" class="btn btn-greeng">Add new User</button>
+</div>
+
+</div>
+
+
+
+
+<%- include('../partials/sidebarfooter') -%>
+<script src="/user/user.js"></script>
+<%- include('../partials/footer') -%>

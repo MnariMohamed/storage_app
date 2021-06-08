@@ -1,0 +1,31 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/sidebar/w3.css">
+<link rel="stylesheet" href="/sidebar/font-awesome.min.css">
+<link rel="stylesheet" href="/sidebar/sidebar.css">
+
+<div id="sidebar1" class="w3-sidebar w3-bar-block w3-card" style="width:11%;min-width: 150px;">
+  <img id="glogo" src="/images/logopng.png" alt="">
+  <div id="sidecontent">
+
+    <%if(currentUser.username=="admin"){%>
+      <a href="/usage" class="w3-bar-item w3-button navH">Usage</a>
+        <div id="setting-drop" class="w3-dropdown-hover">
+          <button id="dropdownside" class="w3-button">Manage Users
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="w3-dropdown-content w3-bar-block drop-content" style="">
+            <a href="/register" class="w3-bar-item w3-button navAU">Add User</a>
+            <a href="/users" class="w3-bar-item w3-button navU">Users</a>
+          </div>
+        </div>
+        <%} else {%>
+          <a href="/storage" class="w3-bar-item w3-button navH">My Storage</a>
+          <%} %>
+
+  </div>
+</div>
+
+<div id="start-content" style="">
+
+  <div id="start-w3" class="w3-container">
+
