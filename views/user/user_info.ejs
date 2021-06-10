@@ -1,0 +1,37 @@
+<%- include('../partials/header') -%>
+<%- include('../partials/sidebar') -%>
+<link rel="stylesheet" href="/user/user.css">
+
+
+<div class="background-container" class="card">
+
+    <div id="adduser" class="w-50 top-m shadow-lg p-3 mb-5 rounded">
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
+        <div class="col-sm-9">
+          <input type="password" class="form-control" id="inputPassword">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-3 col-form-label">Confirm password</label>
+        <div class="col-sm-9">
+          <input type="password" class="form-control" id="inputConfirm">
+        </div>
+      </div>
+
+      <div style="display: none;" id="pass-changed" class="col-sm-7 alert alert-success" role="alert">
+        password changed successfuly
+      </div>
+      <div style="display: none;" id="pass-failed" class="col-sm-7 alert alert-danger" role="alert">
+        something went wrong!
+      </div>
+      <br>
+      <button id="confirm-pass" type="button" class="btn btn-greeng">Confirm</button>
+</div>
+
+</div>
+
+
+<script src="/user/user_info.js"></script>
+<%- include('../partials/sidebarfooter') -%>
+<%- include('../partials/footer') -%>

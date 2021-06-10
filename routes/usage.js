@@ -14,22 +14,6 @@ router.get("/usage", function (req, res) {
         Deleted_user.find({}, async function (err, d_users) {
             if (err) return res.json({ message: "fail" });
             else {
-                //cleaning up unexisted files
-                await users.forEach(t_user => {
-                    if (fs.existsSync(config.folder_path + t_user.folder_name + "/"))
-                        files = fs.readdirSync(config.folder_path + t_user.folder_name + "/");
-                    File.deleteMany({ name: { $nin: files }, User: t_user }, function (err) {
-                        if (err) { console.log(err); res.json({ message: "fail", location: "delete file from db" }); }
-                    });
-                });
-
-                await d_users.forEach(t_d_user => {
-                    if (fs.existsSync(config.folder_path + t_d_user.folder_name + "/"))
-                        files = fs.readdirSync(config.folder_path + t_d_user.folder_name + "/");
-                    File.deleteMany({ name: { $nin: files }, User: t_d_user }, function (err) {
-                        if (err) { console.log(err); res.json({ message: "fail", location: "delete file from db" }); }
-                    });
-                });
 
                 File.find({ User: { $in: users }, pre_deleted: false }).populate('User').exec(function (err, all_files) {
                     if (err) return res.json({ message: "fail" });
@@ -49,7 +33,6 @@ router.get("/usage", function (req, res) {
                             File.find({ $or: [{ Deleted_user: { $in: d_users } }, { User: { $in: users } }], pre_deleted: true }).populate('User').populate('Deleted_user').exec(function (err, pre_d_files) {
                                 if (err) return res.json({ message: "fail" });
                                 else {
-                                    console.log(pre_d_files);
                                     res.render("usage", { client_files, users, d_user_files, d_users, pre_d_files });
                                 }
                             });
@@ -73,22 +56,39 @@ router.delete("/delete_folder", function (req, res) {
     Deleted_user.findOne({ username }, function (err, d_user) {
         if (err) return res.json({ message: "fail", location: "finding user" });
         else {
+            //this part might change depending if the user will have multiple paths
+            File.findOne({Deleted_user: d_user}, function (err, l_file) {
             File.deleteMany({ Deleted_user: d_user }, function (err) {
                 if (err) return res.json({ message: "fail", location: "deleting files db" });
                 else {
 
-                    rimraf(config.folder_path + d_user.folder_name, function () {
-                        Deleted_user.deleteOne({ username }, function (err) {
-                            if (err) return res.json({ message: "fail", location: "deleting user db" });
-                            else {
-                                console.log("success 'as always ;)'");
-                                return res.json({ message: "success" });
-                            }
-                        });
-                    });
+                    if(l_file){
+                            var LF_path=l_file.path.substr(0, l_file.path.lastIndexOf("/"));
+                            console.log("p: "+LF_path);
+                            rimraf(LF_path, function () {
+                                Deleted_user.deleteOne({ username }, function (err) {
+                                    if (err) return res.json({ message: "fail", location: "deleting user db" });
+                                    else {
+                                        console.log("success 'as always ;)'");
+                                        return res.json({ message: "success" });
+                                    }
+                                });
+                            });
+                        }
+                        else{
+                            Deleted_user.deleteOne({ username }, function (err) {
+                                if (err) return res.json({ message: "fail", location: "deleting user db" });
+                                else {
+                                    console.log("success 'as always ;)'");
+                                    return res.json({ message: "success" });
+                                }
+                            }); 
+                        }
 
                 }
             });
+        });
+
         }
     });
 });

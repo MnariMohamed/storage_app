@@ -1,8 +1,11 @@
-function delete_file(path, username_d, deleted_u=false) {
-  
+function delete_file(file_id, username_d, deleted_u=false) {
+    var userChoice =confirm("are you sure you wanna delete the file?");
+  if(!userChoice)
+  return false;
+
     fetch("/delete_file", {
       method: "DELETE",
-      body: JSON.stringify({path, username_d, deleted_u}),
+      body: JSON.stringify({file_id, username_d, deleted_u}),
       headers: {
           'content-type': 'application/json'
       }
@@ -15,6 +18,10 @@ function delete_file(path, username_d, deleted_u=false) {
   };
 
   function delete_folder(username, folder_name) {
+    var userChoice =confirm("are you sure you wanna delete the user and his files?");
+    if(!userChoice)
+    return false;
+
     fetch("/delete_folder", {
         method: "DELETE",
         body: JSON.stringify({username, folder_name}),

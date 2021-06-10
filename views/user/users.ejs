@@ -21,7 +21,13 @@
                 </thead>
                 <% var i=0; users.forEach(function(user){ %>                
                         <tr>
-                            <td id="username<%= i %>" ><%= user.username %></td>
+                            <td id="username-td<%= i %>" >
+                                <% if(user.username!="admin") {%>
+                                    <input onkeypress="return event.charCode != 32" style="text-align: center;" id="<%=user.username%>-username" type='text' value="<%= user.username %>"/>
+                                    <% }else{ %>
+                                        <%= user.username %>
+                                        <% } %>
+                            </td>
                             <td><%= moment(user._id.getTimestamp()).format("DD-MM-YYYY, h:mm a"); %></td>
                         <td> 
                             <% if(user.username!="admin") {%>

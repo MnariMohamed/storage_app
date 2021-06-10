@@ -13,7 +13,7 @@ if(userChoice=="yes" || userChoice=="no"){
        deleteFiles=false;
     }
     var index="#username"+e.target.id;
-    username=$(index).text();
+    username=$(index).val();
             fetch("/user", {
                 method: "DELETE",
                 body: JSON.stringify({username, deleteFiles}),
@@ -33,9 +33,14 @@ return;
     else if(e.target.textContent=="Save"){
 var username=e.target.id;
 var capacity=$("#"+username+"-capacity").val();
-fetch("/update/capacity", {
+var n_username=$("#"+username+"-username").val();
+if(n_username.length<1){
+    alert("insert more characters for username");
+return false;
+}
+fetch("/update/user", {
     method: "PUT",
-    body: JSON.stringify({username, capacity}),
+    body: JSON.stringify({username, capacity, n_username}),
     headers: {
         'content-type': 'application/json'
     }
