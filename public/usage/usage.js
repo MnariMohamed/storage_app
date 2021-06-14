@@ -108,6 +108,40 @@ function restore_file(file_id, file_name) {
   });
 }
 
+function restore_multiple(class_name) {
+  var files_ids=[];
+  var files_list="";
+  document.querySelectorAll("."+class_name).forEach(function (checkbox) {
+    if(checkbox.checked){
+      files_ids.push(checkbox.name);
+      files_list+="\r\n"+checkbox.parentElement.parentElement.getAttribute("name");
+    }
+  });
+  var userChoice =confirm("are you sure you wanna restore \r\n"+files_list+" \r\n?");
+if(!userChoice)
+return false;
+
+var ids;
+files_ids.forEach(function (file_id) {
+    ids=[file_id];
+    fetch("/restore/file", {
+      method: "PUT",
+      body: JSON.stringify({files_ids:ids}),
+      headers: {
+          'content-type': 'application/json'
+      }
+  }).then(data=>{return data.json();}).then(function (res) {
+      if(res.message=="success")
+      location.reload();
+      else
+      alert("something went wrong!");
+  });
+})
+
+}
+
+
+
 function search(e) {
   var searchValue=e.value;
   fetch("/search/"+searchValue)

@@ -48,7 +48,10 @@
                                                 <tr>
                                                     <th><button
                                                         onclick="delete_multiple('check-file-pd-u','<%=users[u].username%>', true)"
-                                                        id="del-multiple" class="btn btn-danger">Del</button></th>
+                                                        id="del-multiple" class="btn btn-danger">Del</button>
+                                                        <button
+                                                        onclick="restore_multiple('check-file-pd-u')"
+                                                        id="rest-multiple" class="btn btn-success">Rest</button></th></th>
                                                     <th>File Name</th>
                                                     <th>Date</th>
                                                     <th>Size</th>
@@ -97,7 +100,10 @@
                                                         <tr>
                                                             <th><button
                                                                 onclick="delete_multiple('check-file-pd-d-u','<%=d_users[du].username%>', true)"
-                                                                id="del-multiple" class="btn btn-danger">Del</button></th>        
+                                                                id="del-multiple" class="btn btn-danger">Del</button>
+                                                                <button
+                                                                onclick="restore_multiple('check-file-pd-d-u')"
+                                                                id="rest-multiple" class="btn btn-success">Rest</button></th>        
                                                             <th>File Name</th>
                                                             <th>Date</th>
                                                             <th>Size</th>
