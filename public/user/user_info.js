@@ -1,6 +1,8 @@
 document.querySelector("#confirm-pass").addEventListener("click", function () {
+    let password=$("#inputOldPassword").val();
     let new_pass = $("#inputPassword").val();
     let confirm_pass = $("#inputConfirm").val();
+    var username=$("#confirm-pass").attr("data");
     if (new_pass != confirm_pass) {
         $("#pass-failed").hide();
         $("#pass-changed").hide(1000);
@@ -10,7 +12,7 @@ alert("password confirmation is wrong");
     }
     fetch("/update_info", {
         method: "POST",
-        body: JSON.stringify({ new_pass }),
+        body: JSON.stringify({username, password, new_pass }),
         headers: {
             'content-type': 'application/json'
         }
@@ -24,6 +26,7 @@ alert("password confirmation is wrong");
             $("#pass-changed").hide();
             $("#pass-changed").show(1000);
             $("#pass-failed").hide(1000);
+            location.reload();
         }
     });
 });

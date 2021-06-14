@@ -7,13 +7,19 @@
 
     <div id="adduser" class="w-50 top-m shadow-lg p-3 mb-5 rounded">
       <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
+        <label for="inputOldPassword" class="col-sm-3 col-form-label">Old Password</label>
+        <div class="col-sm-9">
+          <input type="password" class="form-control" id="inputOldPassword">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-3 col-form-label">New Password</label>
         <div class="col-sm-9">
           <input type="password" class="form-control" id="inputPassword">
         </div>
       </div>
       <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-3 col-form-label">Confirm password</label>
+        <label for="inputPassword" class="col-sm-3 col-form-label">Confirm New password</label>
         <div class="col-sm-9">
           <input type="password" class="form-control" id="inputConfirm">
         </div>
@@ -26,7 +32,7 @@
         something went wrong!
       </div>
       <br>
-      <button id="confirm-pass" type="button" class="btn btn-greeng">Confirm</button>
+      <button id="confirm-pass" data="<%=currentUser.username%>" type="button" class="btn btn-greeng">Confirm</button>
 </div>
 
 </div>

@@ -3,17 +3,21 @@ $(document).ready(function(){
 
 if(e.target.textContent=="Del")
 {
+    var index=e.target.name+"-username";
+    console.log(index);
+    username=$("#"+index).val();
+    console.log(username);
+
     var userChoice =
-     prompt("*****Important please read before Confirming*******\r\nDelete files too?\r\n'yes' to delete user and his files.\r\n'no' to delete only user.\r\n'cancel' to cancel everything");
+     prompt("*****Important please read before Confirming*******\r\nDelete files too?\r\nusername-all to delete user and his files.\r\nusername to delete only user.");
 var deleteFiles=false;
-if(userChoice=="yes" || userChoice=="no"){
-    if(userChoice=="yes")
+if(userChoice==username+"-all" || userChoice==username){
+    if(userChoice==username+"-all")
     deleteFiles=true;
     else{
        deleteFiles=false;
     }
-    var index="#username"+e.target.id;
-    username=$(index).val();
+
             fetch("/user", {
                 method: "DELETE",
                 body: JSON.stringify({username, deleteFiles}),

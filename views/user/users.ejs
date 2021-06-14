@@ -23,7 +23,7 @@
                         <tr>
                             <td id="username-td<%= i %>" >
                                 <% if(user.username!="admin") {%>
-                                    <input onkeypress="return event.charCode != 32" style="text-align: center;" id="<%=user.username%>-username" type='text' value="<%= user.username %>"/>
+                                    <input onkeypress="return event.charCode != 32" style="text-align: center;" id="<%=user.username%>-username" type='text' value="<%=user.username%>"/>
                                     <% }else{ %>
                                         <%= user.username %>
                                         <% } %>
@@ -38,7 +38,7 @@
                         <% if(currentUser.username=="admin") { %>
                             <td class="text-center deleteB"> <% if(user.username!="admin") {%>
                                 <a id="<%=user.username%>" style="background-color: #00B859;color: white;" class='btn btn-xs'><span class="glyphicon glyphicon-save"></span>Save</a>
-                                 <a id=<%=i%> class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Del</a>
+                                 <a id=<%=i%> name="<%=user.username%>" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Del</a>
                                  <% } %></td>
                         <% } %>
                     

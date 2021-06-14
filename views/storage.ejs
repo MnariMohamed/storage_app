@@ -25,7 +25,7 @@
                   </thead>
                   <tbody>
                       <% for(var i=0;i<the_files.length;i++){ %>
-                    <tr id="<%=the_files[i].name%>">
+                    <tr id="<%=the_files[i].name%>" name="<%=the_files[i].name%>">
                       <td style="">
                         <input style="" class="check-file" type="checkbox" id="check-<%=i%>" name="<%=the_files[i]._id%>" value="">
                       </td>
@@ -36,7 +36,7 @@
                       </td>
                       <td><%= the_files[i].date.toUTCString() %></td>
                       <td><%= the_files[i].size.toFixed(4) %> GB</td>
-                      <td><button onclick="pre_delete_file('<%=the_files[i]._id%>','<%=currentUser.username%>');" id="delete_f" class="btn btn-danger">Delete</button></td>
+                      <td><button onclick="pre_delete_file('<%=the_files[i]._id%>','<%=currentUser.username%>', '<%=the_files[i].name%>');" id="delete_f" class="btn btn-danger">Delete</button></td>
                     </tr>
                     <% } %>
                   </tbody>

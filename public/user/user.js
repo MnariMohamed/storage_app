@@ -25,7 +25,9 @@ if(res.message=="failed"){
 }
 if(res.message=="success"){
     $("#useradded").hide();
-    $("#useradded").show(1000);
+    $("#useradded").show("slow", function () {
+        window.location.href = "/users";
+    });
     $("#userfailed").hide(1000);
 }
         });

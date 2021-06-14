@@ -1,78 +1,144 @@
 <%- include('./partials/header') -%>
     <%- include('./partials/sidebar') -%>
         <link rel="stylesheet" href="/usage/usage.css">
+        <script src="https://kit.fontawesome.com/47f38b024b.js" crossorigin="anonymous"></script>
 
         <div id="usage">
 
-            <details id="deleted_details">
+<div id="search-bar" class="input-group rounded">
+  <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
+    aria-describedby="search-addon" onkeyup="search(this)" />
+  <span class="input-group-text border-0" id="search-addon">
+    <i class="fas fa-search"></i>
+  </span>
+</div>
+           
+
+<div style="overflow-x:auto;">
+    <table class="table" style="width:100%">
+        <tr>
+            <th></th>
+            <th>File Name</th>
+            <th>Date</th>
+            <th>Size</th>
+            <th>Action</th>
+        </tr>
+        <tbody class="search-tbody">
+
+        </tbody>
+    </table>
+</div>
+
+
+              <details id="deleted_details">
                 <summary>admin</summary>
                 <div>
 
-                    <details>
+                    <details style="">
                         <summary class="in_sumary">Confirm deletion</summary>
                         <div>
-                            <div style="overflow-x:auto;">
-                                <table class="table" style="width:100%">
-                                    <tr>
-                                        <th>File Name</th>
-                                        <th>User</th>
-                                        <th>Date</th>
-                                        <th>Size</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <% for(var pd=0;pd<pre_d_files.length;pd++){%>
 
-                                        <%for(var u=0;u<users.length;u++){
-                                            if(pre_d_files[pd].User)
-                                            if(pre_d_files[pd].User.username==users[u].username){ %>
-                                            <tr>
-                                                <td><a
-                                                        href="/download_file/<%=pre_d_files[pd]._id%>">
-                                                        <%=pre_d_files[pd].name %>
-                                                    </a></td>
-                                                    <td>
-                                                        <%=users[u].username%></td>
-                                                <td>
-                                                    <%=pre_d_files[pd].date %>
-                                                </td>
-                                                <td>
-                                                    <%=pre_d_files[pd].size.toFixed(4) %>
-                                                </td>
-                                                <td><button
-                                                        onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=users[u].username%>', false);"
-                                                        id="delete_f<%=u%>_<%=pd%>"
-                                                        class="btn btn-danger">Delete</button></td>
-                                            </tr>
-                                            <%} }%>
+                            <%for(var u=0;u<users.length;u++){ %>
+                                <details class="deleted-files-details">
+                                    <summary class="in_sumary">
+                                        <%=users[u].username%>
+                                    </summary>
+                                    <div>
+                                        <div style="overflow-x:auto;">
+                                            <table class="table" style="width:100%">
+                                                <tr>
+                                                    <th><button
+                                                        onclick="delete_multiple('check-file-pd-u','<%=users[u].username%>', true)"
+                                                        id="del-multiple" class="btn btn-danger">Del</button></th>
+                                                    <th>File Name</th>
+                                                    <th>Date</th>
+                                                    <th>Size</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                <% for(var pd=0;pd<pre_d_files.length;pd++){
 
-                                                <%for(var du=0;du<d_users.length;du++){
-                                                    if(pre_d_files[pd].Deleted_user)
-                                                    if(pre_d_files[pd].Deleted_user.username==d_users[du].username){ %>
-                                                    <tr>
-                                                        <td><a
-                                                                href="/download_file/<%=pre_d_files[pd]._id%>">
-                                                                <%=pre_d_files[pd].name %>
-                                                            </a></td>
+                                                     if(pre_d_files[pd].User)
+                                                        if(pre_d_files[pd].User.username==users[u].username){ %>
+                                                        <tr class="del-f-tr" name="<%=pre_d_files[pd].name%>">
+                                                            <td style="">
+                                                                <input style="" class="check-file-pd-u" type="checkbox"
+                                                                    id="check-<%=u%>" name="<%=pre_d_files[pd]._id%>" value="">
+                                                            </td>
+                                                            <td><a href="/download_file/<%=pre_d_files[pd]._id%>">
+                                                                    <%=pre_d_files[pd].name %>
+                                                                </a></td>
                                                             <td>
-                                                                <%=d_users[du].username%></td>
-                                                        <td>
-                                                            <%=pre_d_files[pd].date %>
-                                                        </td>
-                                                        <td>
-                                                            <%=pre_d_files[pd].size.toFixed(4) %>
-                                                        </td>
-                                                        <td><button
-                                                                onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=d_users[du].username%>', true);"
-                                                                id="delete_f<%=du%>_<%=pd%>"
-                                                                class="btn btn-danger">Delete</button></td>
-                                                    </tr>
-                                                    <%} }%>
+                                                                <%=pre_d_files[pd].date %>
+                                                            </td>
+                                                            <td>
+                                                                <%=pre_d_files[pd].size.toFixed(4) %>
+                                                            </td>
+                                                            <td><button
+                                                                    onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=users[u].username%>', false, '<%=pre_d_files[pd].name%>');"
+                                                                    id="delete_f<%=u%>_<%=pd%>"
+                                                                    class="btn btn-danger">Delete</button>
+                                                                <button onclick="restore_file('<%=pre_d_files[pd]._id%>','<%=pre_d_files[pd].name%>')" class="btn btn-success">Restore</button>
+                                                                </td>
+                                                        </tr>
+                                                        <%} }%>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </details>
+                                <%}%>
 
-                                                        <%}%>
-                                </table>
-                            </div>
+                                    <%for(var du=0;du<d_users.length;du++){%>
+                                        <details class="deleted-files-details">
+                                            <summary class="in_sumary">
+                                                <%=d_users[du].username%>
+                                            </summary>
+                                            <div>
+                                                <div style="overflow-x:auto;">
+                                                    <table class="table" style="width:100%">
+                                                        <tr>
+                                                            <th><button
+                                                                onclick="delete_multiple('check-file-pd-d-u','<%=d_users[du].username%>', true)"
+                                                                id="del-multiple" class="btn btn-danger">Del</button></th>        
+                                                            <th>File Name</th>
+                                                            <th>Date</th>
+                                                            <th>Size</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                        <%for(var pd=0;pd<pre_d_files.length;pd++){
+                                                            if(pre_d_files[pd].Deleted_user)
+                                                            if(pre_d_files[pd].Deleted_user.username==d_users[du].username){
+                                                            %>
+                                                            <tr class="del-f-tr" name="<%=pre_d_files[pd].name%>">
+                                                                <td style="">
+                                                                    <input style="" class="check-file-pd-d-u" type="checkbox"
+                                                                        id="check-<%=du%>" name="<%=pre_d_files[pd]._id%>" value="">
+                                                                </td>
+                                                                <td><a href="/download_file/<%=pre_d_files[pd]._id%>">
+                                                                        <%=pre_d_files[pd].name %>
+                                                                    </a></td>
+                                                                <td>
+                                                                    <%=pre_d_files[pd].date %>
+                                                                </td>
+                                                                <td>
+                                                                    <%=pre_d_files[pd].size.toFixed(4) %>
+                                                                </td>
+                                                                <td><button
+                                                                        onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=d_users[du].username%>', true, '<%=pre_d_files[pd].name%>');"
+                                                                        id="delete_f<%=du%>_<%=pd%>"
+                                                                        class="btn btn-danger">Delete</button>
+                                                                        <button onclick="restore_file('<%=pre_d_files[pd]._id%>','<%=pre_d_files[pd].name%>')" class="btn btn-success">Restore</button>
+                                                                    </td>
+                                                            </tr>
+                                                            <%} }%>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </details>
+                                        <%}%>
+
                         </div>
                     </details>
+
 
                     <%for(var i=0;i<d_users.length;i++){ if(d_users[i].username!="admin" ){ %>
                         <details>
@@ -86,6 +152,9 @@
                                 <div style="overflow-x:auto;">
                                     <table class="table" style="width:100%">
                                         <tr>
+                                            <th><button
+                                                    onclick="delete_multiple('check-file-d-u','<%=d_users[i].username%>', true)"
+                                                    id="del-multiple" class="btn btn-danger">Del</button></th>
                                             <th>File Name</th>
                                             <th>Date</th>
                                             <th>Size</th>
@@ -93,9 +162,12 @@
                                         </tr>
                                         <%for(var j=0;j<d_user_files.length;j++){%>
                                             <%if(d_user_files[j].Deleted_user.username==d_users[i].username){%>
-                                                <tr>
-                                                    <td><a
-                                                            href="/download_file/<%=d_user_files[j]._id%>">
+                                                <tr name="<%=d_user_files[j].name%>">
+                                                    <td style="">
+                                                        <input style="" class="check-file-d-u" type="checkbox"
+                                                            id="check-<%=i%>" name="<%=d_user_files[j]._id%>" value="">
+                                                    </td>
+                                                    <td><a href="/download_file/<%=d_user_files[j]._id%>">
                                                             <%=d_user_files[j].name %>
                                                         </a></td>
                                                     <td>
@@ -105,7 +177,7 @@
                                                         <%=d_user_files[j].size.toFixed(4) %>
                                                     </td>
                                                     <td><button
-                                                            onclick="delete_file('<%=d_user_files[j]._id%>','<%=d_users[i].username%>', true);"
+                                                            onclick="delete_file('<%=d_user_files[j]._id%>','<%=d_users[i].username%>', true, '<%=d_user_files[j].name%>');"
                                                             id="delete_f<%=i%>_<%=j%>"
                                                             class="btn btn-danger">Delete</button></td>
                                                 </tr>
@@ -129,6 +201,8 @@
                         <div style="overflow-x:auto;">
                             <table class="table" style="width:100%">
                                 <tr>
+                                    <th><button onclick="delete_multiple('check-file-u','<%=users[i].username%>', true)"
+                                            id="del-multiple" class="btn btn-danger">Del</button></th>
                                     <th>File Name</th>
                                     <th>Date</th>
                                     <th>Size</th>
@@ -136,9 +210,12 @@
                                 </tr>
                                 <%for(var j=0;j<client_files.length;j++){%>
                                     <%if(client_files[j].User.username==users[i].username){%>
-                                        <tr>
-                                            <td><a
-                                                    href="/download_file/<%=client_files[j]._id%>">
+                                        <tr name="<%=client_files[j].name%>">
+                                            <td style="">
+                                                <input style="" class="check-file-u" type="checkbox" id="check-<%=i%>"
+                                                    name="<%=client_files[j]._id%>" value="">
+                                            </td>
+                                            <td><a href="/download_file/<%=client_files[j]._id%>">
                                                     <%=client_files[j].name %>
                                                 </a></td>
                                             <td>
@@ -148,7 +225,7 @@
                                                 <%=client_files[j].size.toFixed(4) %>
                                             </td>
                                             <td><button
-                                                    onclick="delete_file('<%=client_files[j]._id%>','<%=users[i].username%>', false);"
+                                                    onclick="delete_file('<%=client_files[j]._id%>','<%=users[i].username%>', false, '<%=client_files[j].name%>');"
                                                     id="delete_f<%=i%>_<%=j%>" class="btn btn-danger">Delete</button>
                                             </td>
                                         </tr>

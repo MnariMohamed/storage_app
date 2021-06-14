@@ -17,6 +17,9 @@ display: block;
 font-size: 0.9vmax;
 margin-top: 0;
 }
+#search-bar input{
+	font-size: 1vmax;
+}
 /**** extUsage */
 /* Details Styling
 ---------------------------- */
@@ -55,7 +58,7 @@ details summary:before {
 	padding-right: 1.5rem;
 }
 details[open] summary:before {
-	content:"\f106";
+	content:"";
 }
 details[open] {
 	border-bottom: 1px solid #000;
@@ -76,7 +79,8 @@ details > div > * {
     details summary {
 font-size: medium;
     }
-	#deleted_details #delete_all{
+	#deleted_details #delete_all, #search-bar input{
 		font-size: small;
 	}
+
 }

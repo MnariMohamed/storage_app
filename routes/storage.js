@@ -18,7 +18,7 @@ router.use(fileUpload({
 router.get("/storage", function (req, res) {
 //suggestion: to assure files are same in db and disk a solution is to run a test to filter
 
-    File.find({User: req.user, pre_deleted: false }).sort({ date: 'desc' }).exec(function (err, Cfiles) {
+File.find({User: req.user, pre_deleted: false }).sort({ date: 'desc' }).exec(function (err, Cfiles) {
 
         res.render("storage", { the_files: Cfiles });
 
@@ -102,15 +102,19 @@ router.post('/upload', async (req, res) => {
 });
 
 
-//delete file
-router.delete("/delete_file", function (req, res) {
-    var file_id=req.body.file_id;
+//delete files
+router.delete("/delete_files", function (req, res) {
+    //don't use multiple ids because the code not ready to do so
+    var files_ids=[];
+    files_ids=req.body.files_ids;
     var path;
     var file_name;
     var username = req.body.username_d;
     var deleted = req.body.deleted_u;
-    File.findOne({_id: file_id}, function (err, file) {
-        if(err){console.log(err); res.json({message:"failed", location:"find file to download"}); }
+    File.find({_id: { $in: files_ids }}, function (err, files) {
+
+        files.forEach(function (file) {
+                    if(err){console.log(err); res.json({message:"failed", location:"find file to download"}); }
     else{
         path=file.path;
         file_name=file.name;
@@ -119,6 +123,9 @@ router.delete("/delete_file", function (req, res) {
     fs.stat(path, (err, stats) => {
         if (err) {
             console.log(`File doesn't exist.`);
+            File.deleteOne(file,function(err){
+                res.json({ message: "success" });
+            });
         } else {
 
             if (deleted) {
@@ -177,6 +184,8 @@ router.delete("/delete_file", function (req, res) {
     });
 
     }
+        });
+
 });
 
 

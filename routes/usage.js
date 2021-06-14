@@ -9,6 +9,9 @@ var fs = require('fs');
 
 
 router.get("/usage", function (req, res) {
+    if(req.user.username!="admin")
+    return res.redirect("/login");
+
     var files = [];
     User.find({}, async function (err, users) {
         Deleted_user.find({}, async function (err, d_users) {
@@ -49,6 +52,15 @@ router.get("/usage", function (req, res) {
 
 });
 
+//get files by search
+router.get("/search/:keyword", function (req, res) {
+    File.find({name:{$regex : ".*"+req.params.keyword+".*"}}, function (err, files) {
+        if(err) return res.json({message: "failed", location:"finding files by search"});
+        else{
+return res.json({message:"success",files});
+        }
+    })
+});
 
 router.delete("/delete_folder", function (req, res) {
     var username = req.body.username;
@@ -93,4 +105,15 @@ router.delete("/delete_folder", function (req, res) {
     });
 });
 
+router.put("/restore/file", function (req, res) {
+    var files_ids=[];
+    files_ids = req.body.files_ids;
+    File.updateMany({_id: { $in: files_ids }},{pre_deleted: false}, function (err, files) {
+        if (err) return res.json({ message: "fail", location: "updating files status" });
+        else {
+            console.log("success 'as always ;)'");
+            return res.json({ message: "success" });
+        }
+        });
+})
 module.exports = router;

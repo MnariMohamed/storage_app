@@ -77,12 +77,12 @@ function delete_file(file_id, username_C) {
 });
 };
 
-function pre_delete_file(file_id, username_C) {
+function pre_delete_file(file_id, username_C, file_name) {
   var username_d=username_C;
   var files_ids=[];
   files_ids.push(file_id);
 
-  var userChoice =confirm("are you sure you wanna delete the file?");
+  var userChoice =confirm("are you sure you wanna delete\r\n"+file_name+" ?");
   if(!userChoice)
   return false;
 
@@ -103,11 +103,14 @@ function pre_delete_file(file_id, username_C) {
 
 document.querySelector("#del-multiple").addEventListener("click", function (e) {
   var files_ids=[];
+  var files_list="";
   document.querySelectorAll(".check-file").forEach(function (checkbox) {
-    if(checkbox.checked)
-    files_ids.push(checkbox.name);
+    if(checkbox.checked){
+      files_ids.push(checkbox.name);
+      files_list+="\r\n"+checkbox.parentElement.parentElement.getAttribute("name");
+    }
   });
-  var userChoice =confirm("are you sure you wanna delete "+files_ids.length+" files?");
+  var userChoice =confirm("are you sure you wanna delete \r\n"+files_list+" files?");
 if(!userChoice)
 return false;
 

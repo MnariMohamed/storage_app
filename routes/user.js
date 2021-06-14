@@ -113,19 +113,39 @@ router.get("/user_info", isLoggedIn, function (req, res) {
 //update password
 router.post("/update_info", isLoggedIn, function (req, res) {
   var new_pass= req.body.new_pass;
+console.log(req.body);
+
+passport.authenticate('local', function(err, user, info) {
+  if (err) { console.log(err); return res.json({ message: "failed", location: "authenticating" }); }
+  else if (!user) { console.log("not exist"); return res.json({ message: "failed", location: "user existence" });}
+  // req / res held in closure
+  else{
+  req.logIn(user, function(err) {
+    if (err) {  console.log(err); return res.json({ message: "failed", location: "authenticating" });}
+    else{
 
   req.user.setPassword(new_pass, function() {
     req.user.save(function name(err) {
       if (err) { console.log(err); res.json({ message: "failed", location: "update password" }); }
       else {
+        req.logout();
         res.json({ message: "success" });
       }
     });
-  })
+  });
+
+    } 
+  });
+}
+})(req, res);
+
 });
 
 //get uers
 router.get("/users", isLoggedIn, function (req, res) {
+  if(req.user.username!="admin")
+  return res.redirect("/login");
+
   User.find({}, function (err, users) {
     if (err) {
       console.log(err);
@@ -155,7 +175,7 @@ router.get("/admin", function (req, res) {
 /*****register routes*/
 router.get("/register", isLoggedIn, function (req, res) {
   if (res.locals.currentUser.username != "admin")
-    return res.render("user/denied");
+  return res.redirect("/login");
 
   // get disk usage.
   disk.check("/", async function (err, info) {
