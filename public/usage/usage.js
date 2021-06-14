@@ -115,15 +115,23 @@ function search(e) {
     if(res.message=="success")
 {
   document.querySelector(".search-tbody").innerHTML="";
+  var deletedUser;
+  var username;
+  var restoreDisplay;
+  var fileName;
   res.files.forEach(function (file) {
+    deletedUser=file.User? false : true;
+    username=deletedUser? file.Deleted_user.username : file.User.username;
+    restoreDisplay=file.pre_deleted? "inline-block": "none";
+    fileName=file.name.split(' ').join('_');
     document.querySelector(".search-tbody").innerHTML+="<tr class='' name=''> <td><a href='/download_file/"+file._id+"'>"+file.name
     +"</a></td>  <td>"+                                                          
-    file.name+
-"</td> <td>"+
     file.date+
 "</td> <td>"+
-file.size.toFixed(4)+
-"</td></tr>";
+    file.size.toFixed(4)+
+"</td>  <td><button style='margin-right:1%' onclick=delete_file('"+file._id+"','"+username+"','"+ deletedUser+"','"+ fileName+"'); id='' class='btn btn-danger'>Delete</button>"+
+"<button style='display: "+restoreDisplay+"' onclick=restore_file('"+file._id+"','"+ fileName+"'); class='btn btn-success'>Restore</button>"
++" </td> </tr>";
   });
 }    else
     alert("something went wrong!");
