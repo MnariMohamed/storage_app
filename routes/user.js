@@ -97,10 +97,20 @@ router.put("/update/user", function (req, res) {
       userC.capacity = capacity;
       userC.free_space = userC.free_space + difference;
       userC.username = n_username;
-      userC.save(function () {
-        console.log(userC);
-        res.json({ message: "success", user: userC });
-      });
+      if(req.body.new_pass){
+        userC.setPassword(req.body.new_pass, function() {
+          userC.save(function () {
+            console.log(userC);
+            res.json({ message: "success", user: userC });
+          });
+        });
+      }
+      else{
+        userC.save(function () {
+          console.log(userC);
+          res.json({ message: "success", user: userC });
+        });
+      }
     }
   });
 });
@@ -139,6 +149,42 @@ passport.authenticate('local', function(err, user, info) {
 }
 })(req, res);
 
+});
+
+router.get("/edit_profile/:user_id", isLoggedIn,function (req, res) {
+  if (res.locals.currentUser.username != "admin")
+  return res.redirect("/login");
+
+  User.findOne({_id:req.params.user_id}, function (err, user) {
+    if(err) return res.json({message:"failed"});
+
+    disk.check("/", async function (err, info) {
+      var free_disk_sp_G = info.free;
+      console.log(free_disk_sp_G);
+      User.find({}, async function (err, users) {
+        if (err) { console.log(err); res.json({ message: "fail" }) }
+        else {
+          var temp_used = 0;
+          var original_free_disk = 0;
+          var used_users_storage = 0;
+          var allowed_storage = 0;
+          var total_users_storage = 0;
+          await users.forEach(t_user => {
+            temp_used = t_user.capacity - t_user.free_space;
+            used_users_storage += temp_used;
+            total_users_storage += t_user.capacity;
+          });
+          total_users_storage = total_users_storage * Math.pow(1000, 3);
+          console.log(used_users_storage, total_users_storage);
+          original_free_disk = free_disk_sp_G - used_users_storage;
+          allowed_storage = original_free_disk - total_users_storage;
+          allowed_storage = allowed_storage / Math.pow(1000, 3);
+          res.render("user/profile", { free_disk_sp_G, allowed_storage, user});
+        }
+      });
+    });
+    
+  })
 });
 
 //get uers
@@ -204,6 +250,8 @@ router.get("/register", isLoggedIn, function (req, res) {
     });
   });
 });
+
+
 
 router.post("/register", async function (req, res) {
   var date_now = new Date(Date.now());

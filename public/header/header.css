@@ -4,16 +4,18 @@ body{
   #head{
   height: min-content;
   background-color: #1F1F1F;
-  width: 90%;
+  width: 100%;
   padding-left: 150px;
-  float: right;
-  }
+}
   
   #title{
-  margin-left: 40%;
+    color: white;
+    text-decoration: none;
   }
   #headin{
     width: 100%;
+    display: flex;
+justify-content: space-around;
   }
   #head p{
     color: white;
@@ -39,7 +41,22 @@ body{
     width: 1vw;
   
   }
-  
+  #profile-settings{
+      }
+  #profile-settings button, #users-settings button{
+color: white;
+  }
+  #users-settings img{
+    width: 1vw;
+  }
+
+  .w3-dropdown-hover:first-child, .w3-dropdown-click:hover{
+    background-color: #1F1F1F !important;
+  }
+  .reded{
+background-color: #FF0000 !important;
+color: white !important;
+  }
   .navbar{
   }
   .img-responsive{

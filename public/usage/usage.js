@@ -171,3 +171,8 @@ function search(e) {
     alert("something went wrong!");
 });
 }
+
+sizing("#usage");
+window.addEventListener("resize", function () {
+  sizing("#usage");
+});

@@ -30,3 +30,9 @@ alert("password confirmation is wrong");
         }
     });
 });
+
+
+sizing(".background-container");
+window.addEventListener("resize", function () {
+  sizing(".background-container");
+});

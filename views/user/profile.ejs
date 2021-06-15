@@ -1,0 +1,52 @@
+<%- include('../partials/header') -%>
+<link rel="stylesheet" href="/user/user.css">
+
+<div class="background-container" class="card">
+
+    <div id="adduser" class="w-50 top-m shadow-lg p-3 mb-5 rounded">
+    <div class="mb-3 row">
+        <label for="inputUsername" class="col-sm-3 col-form-label">Username</label>
+        <div class="col-sm-9">
+          <input onkeypress="return event.charCode != 32" type="text" class="form-control" id="inputUsername" value="<%=user.username%>">
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
+        <div class="col-sm-9">
+          <input type="password" class="form-control" id="inputPassword" value="">
+        </div>
+      </div>
+    
+      <div id="spaces" class="mb-3 row">
+        <label for="free_d" class="col-sm-3 col-form-label" style="">Allowed space:</label>
+        <button class="col-sm-3">
+            <%= allowed_storage.toFixed(4) %> GB
+        </button>  
+      </div>
+      
+      <div class="mb-3 row">
+               <label for="capacity" class="col-sm-3 col-form-label">Storage Limit</label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" id="capacity"  value="<%=user.capacity%>">
+        </div>   
+        GB
+      </div>
+    
+      <div id="userupdated" class="col-sm-7 alert alert-success" role="alert">
+        User updated successfuly
+      </div>
+      <div id="updatefailed" class="col-sm-7 alert alert-danger" role="alert">
+        User not updated
+      </div>
+      <br/>
+      <button id="savebutton" type="button" class="btn btn-greeng" onclick="update_user('<%=user.username%>')">Save</button>
+
+    </div>
+    
+    </div>
+
+
+
+
+<script src="/user/profile.js"></script>
+<%- include('../partials/footer') -%>

@@ -1,14 +1,18 @@
 .background-container{
-border-radius: 1.5vmax;
-height: 90vh;
 display: flex;
 flex-direction: column;
-margin-top: 1.5vh;
-background-color: white;
+width: 98%;
+margin: auto;
+justify-content: center;
 }
-
+#bg-u{
+    border-radius: 1.5vmax;
+    background-color: white;
+height: 98%;
+display: flex;
+flex-direction: column;
+}
 .top-m{
-    margin-top: 10%;
     text-align: center;
 }
 #useradded{
@@ -23,6 +27,7 @@ background-size: cover;
     margin-left: auto;
     margin-right: auto;
 height: max-content;
+margin-top: 10%;
 }
 #adduser label{
     color: #070707;
@@ -60,8 +65,17 @@ font-size: 0.8vw;
 min-width: min-content;
     margin-left: auto;
     margin-right: auto;
-    width: max-content;
-    max-width: 100%;
+    width: 100%;
+    border-radius: 1.5vmax;
+    background-color: white;
+height: 98%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.middle{
+    margin-top: 5%;
+    overflow-y: auto;
 }
 .custab{
     border: 1px solid #ccc;
@@ -79,7 +93,6 @@ min-width: min-content;
 margin-bottom: 0 !important;
     }
     #users-table{
-margin-top: 5%;
     }
     .alert{
         margin: auto;
@@ -96,7 +109,9 @@ font-size: 0.9vmax;
         text-align: center;
     }
 
-
+.view-img{
+    width: 2vmax;
+}
 
     /******* screen */
     @media screen and (max-width: 1300px) {

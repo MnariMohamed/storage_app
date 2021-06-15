@@ -1,9 +1,9 @@
 <%- include('../partials/header') -%>
-<%- include('../partials/sidebar') -%>
 <link rel="stylesheet" href="/user/user.css">
 
 
 <div class="background-container" class="card">
+  <div id="bg-u">
 
     <div id="adduser" class="w-50 top-m shadow-lg p-3 mb-5 rounded">
       <div class="mb-3 row">
@@ -34,10 +34,10 @@
       <br>
       <button id="confirm-pass" data="<%=currentUser.username%>" type="button" class="btn btn-greeng">Confirm</button>
 </div>
+</div>
 
 </div>
 
 
 <script src="/user/user_info.js"></script>
-<%- include('../partials/sidebarfooter') -%>
 <%- include('../partials/footer') -%>

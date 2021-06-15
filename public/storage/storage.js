@@ -129,10 +129,8 @@ return false;
 });
 
 
-function sizing() {
-  var screenH=window.innerHeight;
-var leftH=screenH-document.querySelector("#head").clientHeight;
-document.querySelector("#storage").style.height=leftH+"px";
-}
-sizing();
-window.addEventListener("resize", sizing);
+
+sizing("#storage");
+window.addEventListener("resize", function () {
+  sizing("#storage");
+});

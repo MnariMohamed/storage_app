@@ -56,3 +56,10 @@ fetch("/update/user", {
 
 });
 });
+
+
+
+sizing(".background-container");
+window.addEventListener("resize", function () {
+  sizing(".background-container");
+});

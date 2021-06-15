@@ -1,11 +1,16 @@
 #usage{
-    background-color: white;
-    border-radius: 1vmax;
-    padding: 1%;
-    margin-top: 1vh;
-    min-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
-
+.in-container{
+	background-color: white;
+    border-radius: 1vmax;
+	padding: 1%;
+	margin: auto;
+width: 98%;
+height: 98%;
+}
 details{
     margin-bottom: 1%;
 }
