@@ -84,35 +84,63 @@ router.delete('/user', isLoggedIn, function (req, res) {
 /***** update routes */
 
 //update user
-router.put("/update/user", function (req, res) {
+router.put("/update/user", async function (req, res) {
   var username = req.body.username;
   var capacity = req.body.capacity;
   var n_username = req.body.n_username;
 
-  console.log(req.body);
-  User.findOne({ username }, function (err, userC) {
-    if (err) { console.log(err); res.json({ message: "failed", location: "update capacity" }); }
-    else {
-      var difference = capacity - userC.capacity;
-      userC.capacity = capacity;
-      userC.free_space = userC.free_space + difference;
-      userC.username = n_username;
-      if(req.body.new_pass){
-        userC.setPassword(req.body.new_pass, function() {
-          userC.save(function () {
-            console.log(userC);
-            res.json({ message: "success", user: userC });
-          });
+  disk.check("/", async function (err, info) {
+    var free_disk_sp_G = info.free;
+    console.log(free_disk_sp_G);
+    User.find({}, async function (err, users) {
+      if (err) { console.log(err); res.json({ message: "fail" }) }
+      else {
+        var temp_used = 0;
+        var original_free_disk = 0;
+        var used_users_storage = 0;
+        var allowed_storage = 0;
+        var total_users_storage = 0;
+        await users.forEach(t_user => {
+          temp_used = t_user.capacity - t_user.free_space;
+          used_users_storage += temp_used;
+          total_users_storage += t_user.capacity;
         });
-      }
-      else{
-        userC.save(function () {
-          console.log(userC);
-          res.json({ message: "success", user: userC });
+        total_users_storage = total_users_storage * Math.pow(1000, 3);
+        console.log(used_users_storage, total_users_storage);
+        original_free_disk = free_disk_sp_G - used_users_storage;
+        allowed_storage = original_free_disk - total_users_storage;
+        allowed_storage = allowed_storage / Math.pow(1000, 3);
+        
+        User.findOne({ username }, function (err, userC) {
+          if (err) { console.log(err); res.json({ message: "failed", location: "update capacity" }); }
+          else {
+            var difference = capacity - userC.capacity;
+if(allowed_storage<difference) return res.json({message:"failed", description:"space not enough"});
+
+            userC.capacity = capacity;
+            userC.free_space = userC.free_space + difference;
+            userC.username = n_username;
+            if(req.body.new_pass){
+              userC.setPassword(req.body.new_pass, function() {
+                userC.save(function () {
+                  console.log(userC);
+                  res.json({ message: "success", user: userC });
+                });
+              });
+            }
+            else{
+              userC.save(function () {
+                console.log(userC);
+                res.json({ message: "success", user: userC });
+              });
+            }
+          }
         });
+      
       }
-    }
+    });
   });
+
 });
 
 //get update page

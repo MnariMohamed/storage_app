@@ -13,8 +13,14 @@ function update_user(username) {
 }).then(data=>{return data.json();}).then(function (res) {
     if(res.message=="success"){
       $("#updatefailed").hide();
-      $("#userupdated").show("slow");
-   //   location.reload();
+      $("#userupdated").show("slow", function () {
+        location.reload();
+      });
+    }
+    else if(res.description=="space not enough"){
+      $("#userupdated").hide();
+      $("#updatefailed").show("slow");
+      alert("not enough space");
     }
     else{
       $("#userupdated").hide();
