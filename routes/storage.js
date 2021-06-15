@@ -31,6 +31,7 @@ router.get("/download_file/:file_id", function (req, res) {
 File.findOne({_id: file_id}, function (err, file) {
     if(err){console.log(err); res.json({message:"failed", location:"find file to download"}); }
 else{
+    if(!file){return res.redirect("/storage", 404);}
     console.log(file.path);
     res.download(file.path);
 }
