@@ -9,8 +9,8 @@ var fs = require('fs');
 
 
 router.get("/usage", function (req, res) {
-    if(req.user.username!="admin")
-    return res.redirect("/login");
+    if (req.user.username != "admin")
+        return res.redirect("/login");
 
     var files = [];
     User.find({}, async function (err, users) {
@@ -54,10 +54,10 @@ router.get("/usage", function (req, res) {
 
 //get files by search
 router.get("/search/:keyword", function (req, res) {
-    File.find({name:{$regex : ".*"+req.params.keyword+".*"}}).populate('User').populate('Deleted_user').exec( function (err, files) {
-        if(err) return res.json({message: "failed", location:"finding files by search"});
-        else{
-return res.json({message:"success",files});
+    File.find({ name: { $regex: ".*" + req.params.keyword + ".*" } }).populate('User').populate('Deleted_user').exec(function (err, files) {
+        if (err) return res.json({ message: "failed", location: "finding files by search" });
+        else {
+            return res.json({ message: "success", files });
         }
     })
 });
@@ -70,14 +70,14 @@ router.delete("/delete_folder", function (req, res) {
         if (err) return res.json({ message: "fail", location: "finding user" });
         else {
             //this part might change depending if the user will have multiple paths
-            File.findOne({Deleted_user: d_user}, function (err, l_file) {
-            File.deleteMany({ Deleted_user: d_user }, function (err) {
-                if (err) return res.json({ message: "fail", location: "deleting files db" });
-                else {
+            File.findOne({ Deleted_user: d_user }, function (err, l_file) {
+                File.deleteMany({ Deleted_user: d_user }, function (err) {
+                    if (err) return res.json({ message: "fail", location: "deleting files db" });
+                    else {
 
-                    if(l_file){
-                            var LF_path=l_file.path.substr(0, l_file.path.lastIndexOf("/"));
-                            console.log("p: "+LF_path);
+                        if (l_file) {
+                            var LF_path = l_file.path.substr(0, l_file.path.lastIndexOf("/"));
+                            console.log("p: " + LF_path);
                             rimraf(LF_path, function () {
                                 Deleted_user.deleteOne({ username }, function (err) {
                                     if (err) return res.json({ message: "fail", location: "deleting user db" });
@@ -88,33 +88,43 @@ router.delete("/delete_folder", function (req, res) {
                                 });
                             });
                         }
-                        else{
+                        else {
                             Deleted_user.deleteOne({ username }, function (err) {
                                 if (err) return res.json({ message: "fail", location: "deleting user db" });
                                 else {
                                     console.log("success 'as always ;)'");
                                     return res.json({ message: "success" });
                                 }
-                            }); 
+                            });
                         }
 
-                }
+                    }
+                });
             });
-        });
 
         }
     });
 });
 
 router.put("/restore/file", function (req, res) {
-    var files_ids=[];
+    var files_ids = [];
     files_ids = req.body.files_ids;
-    File.updateMany({_id: { $in: files_ids }},{pre_deleted: false}, function (err, files) {
-        if (err) return res.json({ message: "fail", location: "updating files status" });
-        else {
-            console.log("success 'as always ;)'");
-            return res.json({ message: "success" });
-        }
+    //turn it to multiple later
+    File.findOne({ _id: { $in: files_ids } }, function (err, file) {
+        if (err) return res.json({ message: "fail", location: "finding file" });
+        User.findOne({ _id: file.User }, function (err, user) {
+            if (err) return res.json({ message: "fail", location: "finding user" });
+           // if (user.free_space < file.size) return res.json({ message: "fail", desc: "user space full" });
+                        File.updateMany({ _id: { $in: files_ids } }, { pre_deleted: false }, function (err, files) {
+                            if (err) return res.json({ message: "fail", location: "updating files status" });
+                            else {
+                                console.log("success 'as always ;)'");
+                                return res.json({ message: "success" });
+                            }
+                        });
+
         });
+    });
+
 })
 module.exports = router;

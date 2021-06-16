@@ -2,8 +2,18 @@
 <link rel="stylesheet" href="/user/user.css">
 
 <div class="background-container" class="card">
+
+
 <div id="users-table" class=""> 
+
+
     <div class="row custyle middle">
+        <form action="/adminStorage" method="POST">
+            <label for="adminStorage">My Storage size:</label>
+            <input type="number" name="adminStorage" id="adminStorage" value="<%=currentUser.capacity%>">
+            <button type="submit" class="btn btn-success">save</button>
+        </form>
+        <b>Available Storage: <%=allowed_storage.toFixed(4)%></b>
         <div class="">
             <table class="table table-striped custab">
                 <thead>
@@ -28,9 +38,7 @@
                             </td>
                             <td><%= moment(user._id.getTimestamp()).format("DD-MM-YYYY, h:mm a"); %></td>
                         <td> 
-                            <% if(user.username!="admin") {%>
                             <input disabled style="background: none;border: none;text-align: center;color: #070707;" id="<%=user.username%>-capacity" type='number' value="<%= user.capacity %>"/>
-                            <% } %>
                         </td>
 
                         <% if(currentUser.username=="admin") { %>
@@ -45,6 +53,11 @@
                 </table>
         </div>
     </div>
+    <%if(!typeof error == 'undefined'){%>
+    <div id="error" style="" class="col-sm-7 alert alert-danger" role="alert">
+        <%=error%>
+    </div>
+    <%}%>
 </div>
 </div>
 

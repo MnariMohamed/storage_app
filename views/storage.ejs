@@ -35,14 +35,14 @@
                       </td>
                       <td><%= the_files[i].date.toUTCString() %></td>
                       <td><%= the_files[i].size.toFixed(4) %> GB</td>
-                      <td><button onclick="pre_delete_file('<%=the_files[i]._id%>','<%=currentUser.username%>', '<%=the_files[i].name%>');" id="delete_f" class="btn btn-danger">Delete</button></td>
+                      <td><button onclick="pre_delete_file('<%=the_files[i]._id%>','<%=currentUser._id%>', '<%=the_files[i].name%>');" id="delete_f" class="btn btn-danger">Delete</button></td>
                     </tr>
                     <% } %>
                   </tbody>
                 </table>
               </div>
 
-
+              <span id="id_sp" style="display: none;"><%=currentUser._id%></span>
       <span id="username_sp" style="display: none;"><%=currentUser.username%></span>
       <span id="free_sp" style="display: none;"><%=currentUser.free_space%></span>
 </div>

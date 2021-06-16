@@ -48,10 +48,10 @@
                                             <table class="table" style="width:100%">
                                                 <tr>
                                                     <th><button
-                                                        onclick="delete_multiple('check-file-pd-u','<%=users[u].username%>', true)"
+                                                        onclick="delete_multiple('check-file-pd-u','<%=users[u].username%>', true, '<%=users[u]._id%>')"
                                                         id="del-multiple" class="btn btn-danger">Del</button>
                                                         <button
-                                                        onclick="restore_multiple('check-file-pd-u')"
+                                                        onclick="restore_multiple('check-file-pd-u', '<%=users[u]._id%>', '<%=users[u].free_space%>')"
                                                         id="rest-multiple" class="btn btn-success">Rest</button></th></th>
                                                     <th>File Name</th>
                                                     <th>Date</th>
@@ -65,8 +65,10 @@
                                                         <tr class="del-f-tr" name="<%=pre_d_files[pd].name%>">
                                                             <td style="">
                                                                 <input style="" class="check-file-pd-u" type="checkbox"
-                                                                    id="check-<%=u%>" name="<%=pre_d_files[pd]._id%>" value="">
-                                                            </td>
+                                                                    id="check-c-u-<%=pd%>" name="<%=pre_d_files[pd]._id%>" data=<%=pre_d_files[pd].size%> value="">
+                                                                    <% let result = pre_d_files.map(({ size }) => size)
+                                                                    %>
+                                                                </td>
                                                             <td><a href="/download_file/<%=pre_d_files[pd]._id%>">
                                                                     <%=pre_d_files[pd].name %>
                                                                 </a></td>
@@ -77,10 +79,10 @@
                                                                 <%=pre_d_files[pd].size.toFixed(4) %>
                                                             </td>
                                                             <td><button
-                                                                    onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=users[u].username%>', false, '<%=pre_d_files[pd].name%>');"
+                                                                    onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=users[u].username%>', false, '<%=pre_d_files[pd].name%>', '<%=users[u]._id%>');"
                                                                     id="delete_f<%=u%>_<%=pd%>"
                                                                     class="btn btn-danger">Delete</button>
-                                                                <button onclick="restore_file('<%=pre_d_files[pd]._id%>','<%=pre_d_files[pd].name%>')" class="btn btn-success">Restore</button>
+                                                                <button onclick="restore_file('<%=pre_d_files[pd]._id%>','<%=pre_d_files[pd].name%>', '<%=users[u].free_space%>', '<%=pre_d_files[pd].size%>', '<%=users[u].id%>')" class="btn btn-success">Restore</button>
                                                                 </td>
                                                         </tr>
                                                         <%} }%>
@@ -100,11 +102,11 @@
                                                     <table class="table" style="width:100%">
                                                         <tr>
                                                             <th><button
-                                                                onclick="delete_multiple('check-file-pd-d-u','<%=d_users[du].username%>', true)"
+                                                                onclick="delete_multiple('check-file-pd-d-u','<%=d_users[du].username%>', true, '<%=d_users[du]._id%>')"
                                                                 id="del-multiple" class="btn btn-danger">Del</button>
-                                                                <button
+                                                                <!--button
                                                                 onclick="restore_multiple('check-file-pd-d-u')"
-                                                                id="rest-multiple" class="btn btn-success">Rest</button></th>        
+                                                                id="rest-multiple" class="btn btn-success">Rest</button--></th>        
                                                             <th>File Name</th>
                                                             <th>Date</th>
                                                             <th>Size</th>
@@ -129,10 +131,10 @@
                                                                     <%=pre_d_files[pd].size.toFixed(4) %>
                                                                 </td>
                                                                 <td><button
-                                                                        onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=d_users[du].username%>', true, '<%=pre_d_files[pd].name%>');"
+                                                                        onclick="delete_file('<%=pre_d_files[pd]._id%>','<%=d_users[du].username%>', true, '<%=pre_d_files[pd].name%>', '<%=d_users[du]._id%>');"
                                                                         id="delete_f<%=du%>_<%=pd%>"
                                                                         class="btn btn-danger">Delete</button>
-                                                                        <button onclick="restore_file('<%=pre_d_files[pd]._id%>','<%=pre_d_files[pd].name%>')" class="btn btn-success">Restore</button>
+                                                                        <!--button onclick="restore_file('<%=pre_d_files[pd]._id%>','<%=pre_d_files[pd].name%>')" class="btn btn-success">Restore</button-->
                                                                     </td>
                                                             </tr>
                                                             <%} }%>
@@ -159,7 +161,7 @@
                                     <table class="table" style="width:100%">
                                         <tr>
                                             <th><button
-                                                    onclick="delete_multiple('check-file-d-u','<%=d_users[i].username%>', true)"
+                                                    onclick="delete_multiple('check-file-d-u','<%=d_users[i].username%>', true, '<%=d_users[i]._id%>')"
                                                     id="del-multiple" class="btn btn-danger">Del</button></th>
                                             <th>File Name</th>
                                             <th>Date</th>
@@ -183,7 +185,7 @@
                                                         <%=d_user_files[j].size.toFixed(4) %>
                                                     </td>
                                                     <td><button
-                                                            onclick="delete_file('<%=d_user_files[j]._id%>','<%=d_users[i].username%>', true, '<%=d_user_files[j].name%>');"
+                                                            onclick="delete_file('<%=d_user_files[j]._id%>','<%=d_users[i].username%>', true, '<%=d_user_files[j].name%>', '<%=d_users[i]._id%>');"
                                                             id="delete_f<%=i%>_<%=j%>"
                                                             class="btn btn-danger">Delete</button></td>
                                                 </tr>
@@ -207,7 +209,7 @@
                         <div style="overflow-x:auto;">
                             <table class="table" style="width:100%">
                                 <tr>
-                                    <th><button onclick="delete_multiple('check-file-u','<%=users[i].username%>', true)"
+                                    <th><button onclick="delete_multiple('check-file-u','<%=users[i].username%>', true,'<%=users[i]._id%>')"
                                             id="del-multiple" class="btn btn-danger">Del</button></th>
                                     <th>File Name</th>
                                     <th>Date</th>
@@ -231,7 +233,7 @@
                                                 <%=client_files[j].size.toFixed(4) %>
                                             </td>
                                             <td><button
-                                                    onclick="delete_file('<%=client_files[j]._id%>','<%=users[i].username%>', false, '<%=client_files[j].name%>');"
+                                                    onclick="delete_file('<%=client_files[j]._id%>','<%=users[i].username%>', false, '<%=client_files[j].name%>', '<%=users[i]._id%>');"
                                                     id="delete_f<%=i%>_<%=j%>" class="btn btn-danger">Delete</button>
                                             </td>
                                         </tr>

@@ -151,7 +151,6 @@ router.get("/user_info", isLoggedIn, function (req, res) {
 //update password
 router.post("/update_info", isLoggedIn, function (req, res) {
   var new_pass= req.body.new_pass;
-console.log(req.body);
 
 passport.authenticate('local', function(err, user, info) {
   if (err) { console.log(err); return res.json({ message: "failed", location: "authenticating" }); }
@@ -215,6 +214,51 @@ router.get("/edit_profile/:user_id", isLoggedIn,function (req, res) {
   })
 });
 
+//update admin storage
+router.post("/adminStorage", function (req, res) {
+  User.findOne({username: "admin"}, function (err, admin) {
+    if (err) {
+      return console.log(err);
+    }
+    /****** to modify! */
+    console.log(admin);
+    disk.check("/", async function (err, info) {
+      var free_disk_sp_G = info.free;
+      console.log(free_disk_sp_G);
+      User.find({}, async function (err, users) {
+        if (err) { console.log(err); res.json({ message: "fail" }) }
+        else {
+          var temp_used = 0;
+          var original_free_disk = 0;
+          var used_users_storage = 0;
+          var allowed_storage = 0;
+          var total_users_storage = 0;
+          await users.forEach(t_user => {
+            temp_used = t_user.capacity - t_user.free_space;
+            used_users_storage += temp_used;
+            total_users_storage += t_user.capacity;
+          });
+          total_users_storage = total_users_storage * Math.pow(1000, 3);
+          console.log(used_users_storage, total_users_storage);
+          original_free_disk = free_disk_sp_G - used_users_storage;
+          allowed_storage = original_free_disk - total_users_storage;
+          allowed_storage = allowed_storage / Math.pow(1000, 3);
+          var dirence=req.body.adminStorage-admin.capacity;
+if(dirence>allowed_storage){
+return res.send("<h1 style='text-align: center;'>not enough allowed storage, <a href='/users'>Go Back</a></h1>");
+} 
+admin.capacity=req.body.adminStorage;
+admin.free_space=req.body.adminStorage;
+admin.save();
+res.redirect("/");
+       }
+      });
+    });
+    
+  })
+});
+
+
 //get uers
 router.get("/users", isLoggedIn, function (req, res) {
   if(req.user.username!="admin")
@@ -225,10 +269,14 @@ router.get("/users", isLoggedIn, function (req, res) {
       console.log(err);
     }
     else {
-      res.render("user/users", { users, moment });
+      var data={ users, moment };
+check_disk(req, res, "user/users", data);
     }
   })
 });
+
+
+
 //check admin
 router.get("/admin", function (req, res) {
   User.findOne({ username: 'admin' }, function (err, user) {
@@ -362,5 +410,35 @@ router.get("/", function (req, res) {
     });
 
 });
+
+
+function check_disk(req, res, view, data) {
+  disk.check("/", async function (err, info) {
+    var free_disk_sp_G = info.free;
+    console.log(free_disk_sp_G);
+    User.find({}, async function (err, users) {
+      if (err) { console.log(err); res.json({ message: "fail" }) }
+      else {
+        var temp_used = 0;
+        var original_free_disk = 0;
+        var used_users_storage = 0;
+        var allowed_storage = 0;
+        var total_users_storage = 0;
+        await users.forEach(t_user => {
+          temp_used = t_user.capacity - t_user.free_space;
+          used_users_storage += temp_used;
+          total_users_storage += t_user.capacity;
+        });
+        total_users_storage = total_users_storage * Math.pow(1000, 3);
+        console.log(used_users_storage, total_users_storage);
+        original_free_disk = free_disk_sp_G - used_users_storage;
+        allowed_storage = original_free_disk - total_users_storage;
+        allowed_storage = allowed_storage / Math.pow(1000, 3);
+        data["allowed_storage"]=allowed_storage;
+        res.render(view, data);
+      }
+    });
+  });
+}
 
 module.exports = router;

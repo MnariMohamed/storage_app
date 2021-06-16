@@ -72,9 +72,7 @@ router.post('/upload', async (req, res) => {
                                 if (err) { console.log(err); res.json({ message: "failed", err }) }
                                 else {
 
-                                    req.user.free_space = req.user.free_space - fileC.size;
-                                    req.user.save(function () {
-                                        console.log(req.user, fileC.size);
+                                        console.log(req.user.free_space, fileC.size);
                                         res.json({
                                             message: 'success',
                                             data: {
@@ -83,7 +81,6 @@ router.post('/upload', async (req, res) => {
                                                 size: uploadedFile.size
                                             }
                                         });
-                                    });
 
                                 }
 
@@ -100,6 +97,38 @@ router.post('/upload', async (req, res) => {
         res.json({ Error: "Error while uploading file." });
         console.log(err);
     }
+});
+
+//update current user freespace
+router.post("/update/user_space", function (req, res) {
+    User.findOne({_id:req.body.user_id}, function (err, user) {
+        if(err){console.log(err); return res.json({message:"failed", location:"finding user"}); }
+        File.find({User: user, pre_deleted: false}, function (err, files) {
+    if(err || !files){console.log(err); return res.json({message:"failed"});}
+    console.log(files);
+    var files_size_t=0;
+    files.forEach(function (file) {
+        files_size_t+=file.size;
+    });
+    user.free_space=user.capacity-files_size_t;
+    user.save(function () {
+        User.findOne({username:"admin"}, function (err, admin) {
+            if(err){console.log(err); return res.json({message:"failed", location:"finding admin"}); }
+            File.find({pre_deleted: true}, function (err, pred_files) {
+                var pred_files_size_t=0;
+                pred_files.forEach(function (pred_file) {
+                    pred_files_size_t+=pred_file.size;
+                });
+                admin.free_space=admin.capacity-pred_files_size_t;
+                admin.save(function () {
+                    res.json({ message: "success" });
+                });
+                            });
+        });    
+    });
+});
+    });
+    
 });
 
 
@@ -139,7 +168,7 @@ router.delete("/delete_files", function (req, res) {
                                 File.deleteMany({ Deleted_user: d_user, name: file_name }, function (err) {
                                     if (err) { console.log(err); res.json({ message: "fail", location: "deleting file from db" }); }
                                     else {
-                                        res.json({ message: "success" });
+                                        update_admin(req, res);
                                     }
                                 });
                             }
@@ -152,7 +181,6 @@ router.delete("/delete_files", function (req, res) {
                 User.findOne({ username }, function (err, user) {
                     if (err) { console.log(err); res.json({ message: "fail", location: "finding user in deleting file" }); }
                     else {
-                        user.save(function () {
                             //delete_from direct
                             fs.unlink(path, function (err) {
                                 if (err) throw err;
@@ -161,21 +189,21 @@ router.delete("/delete_files", function (req, res) {
                                     File.deleteMany({ User: user, name: file_name }, function (err) {
                                         if (err) { console.log(err); res.json({ message: "fail", location: "deleting file from db" }); }
                                         else {
-                                            File.find({User: user}, function (err, a_files) {
+                                            File.find({User: user, pre_deleted:false}, function (err, a_files) {
                                             var freespace = user.capacity;
                                             for (var i = 0; i < a_files.length; i++) {
                                                 freespace -= a_files[i].size;
                                             }
                                             user.free_space = freespace;
                                             console.log(freespace);
-                                            user.save();
-                                            res.json({ message: "success" });
+                                            user.save(function () {
+                                                update_admin(req, res);
+                                            });
                                         });
                                         }
                                     });
                                 }
                             });
-                        });
 
                     }
                 });
@@ -196,13 +224,57 @@ router.delete("/delete_files", function (req, res) {
 router.post("/predelete", function (req, res) {
     var files_ids=[];
     files_ids = req.body.files_ids;
-    File.updateMany({ User: req.user, _id: { $in: files_ids } }, { pre_deleted: true }, function (err, files) {
-        if (err) { console.log(err); res.json({ message: "fail", location: "finding file to mark as delete" }); }
-        else {
-            console.log(files);
-            res.json({ message: "success", files });
-        }
-    });
+    var user_id=req.body.user_id;
+    var total_files_size=0;
+
+    File.find({ User: user_id, _id: { $in: files_ids } }, function (err, the_files) {
+        if(err){ console.log(err); return res.json({message:"failed", location:"finding files"});}
+        User.findOne({username: "admin"}, function (err, admin) {
+            if(err){ console.log(err); return res.json({message:"failed", location:"finding admin"});}
+            var total_files_size=0;
+            for (var i = 0; i < the_files.length; i++) {
+                total_files_size+=the_files[i].size;
+            }
+            if(admin.free_space<total_files_size)
+            return res.json({message:"failed", keyword:"space", desc:"not enough space for admin storage, only "+admin.free_space+" left"});
+            else
+            admin.free_space-=total_files_size;
+            admin.save(function () {
+                File.updateMany({ User: user_id, _id: { $in: files_ids } }, { pre_deleted: true }, function (err, files) {
+                    if (err) { console.log(err); res.json({ message: "fail", location: "updating file to mark as delete" }); }
+                    else {
+                            User.findOne({_id: user_id}, function(err, user) {
+                                user.free_space+=total_files_size;
+                                user.save(function () {
+                                    console.log(total_files_size);
+                                    res.json({ message: "success", files });
+                                });
+                            })    
+    
+                    }
+                });  
+            })
+  
+
+        });
 });
 
+});
+
+
+function update_admin(req,res) {
+    User.findOne({username:"admin"}, function (err, admin) {
+        if(err){console.log(err); return res.json({message:"failed", location:"finding admin"}); }
+        File.find({pre_deleted: true}, function (err, pred_files) {
+            var pred_files_size_t=0;
+            pred_files.forEach(function (pred_file) {
+                pred_files_size_t+=pred_file.size;
+            });
+            admin.free_space=admin.capacity-pred_files_size_t;
+            admin.save(function () {
+                res.json({ message: "success" });
+            });
+                        });
+    });  
+}
 module.exports = router;

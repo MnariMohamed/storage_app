@@ -5,25 +5,29 @@ document.querySelector("#uploadNow").addEventListener("click", function () {
   var i;
   var res_count=0;
   var xhrs=[];
+var files_s_G=0;
+var free_sp=parseFloat(document.querySelector("#free_sp").textContent);
+var username=document.querySelector("#username_sp").textContent;
 
-    for(i=0; i<files.length;i++){
-      file=files[i];
-
-      file_s_G=file.size / Math.pow(1000, 3);
-      var username=document.querySelector("#username_sp").textContent;
-      var free_sp=parseFloat(document.querySelector("#free_sp").textContent);
-  if(username!="admin" && file_s_G>free_sp){
+for(i=0; i<files.length;i++){
+  file=files[i];
+  files_s_G+=file.size / Math.pow(1000, 3);
+  if(username!="admin" && files_s_G>free_sp){
     document.querySelector('#progress').style.display="block";
     $('#progress').removeClass("alert-warning");
     $( "#progress" ).addClass( "alert-danger" );
     $( "#progress" ).text(free_sp.toFixed(4)+" GB is not enough space!")
   return false;
   }
-  else{
+}
+    for(i=0; i<files.length;i++){
+      file=files[i];
+
+
   // your form
   var form = new FormData();
   form.append('uploadedFile', file);
-
+console.log(file.size);
   xhrs[i] = $.ajaxSettings.xhr();
   xhrs[i].upload.onprogress = function(evt) {
     document.querySelector('#progress').textContent =parseInt(evt.loaded / evt.total * 100) + '%';
@@ -37,7 +41,19 @@ console.log(res_count, files.length);
         if(xhr.target.response.message=="success"){
           $('#progress').removeClass("alert-warning");
           $( "#progress" ).addClass( "alert-success" );
+          var user_id=$("#id_sp").text();
+          fetch("/update/user_space", {
+            method: "POST",
+            body: JSON.stringify({user_id}),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(data=>{return data.json();}).then(function (res) {
+          if(res.message=="success")
           location.reload();
+          else
+          alert("something went wrong!");
+        });
         }
         else{
           if(xhr.target.response.desc=="file exists"){
@@ -53,7 +69,6 @@ console.log(res_count, files.length);
   xhrs[i].responseType = 'json';
   xhrs[i].open('POST', '/upload'); // Url where you want to upload
   xhrs[i].send(form);
-  }
     }
 
 
@@ -77,8 +92,7 @@ function delete_file(file_id, username_C) {
 });
 };
 
-function pre_delete_file(file_id, username_C, file_name) {
-  var username_d=username_C;
+function pre_delete_file(file_id, user_id, file_name) {
   var files_ids=[];
   files_ids.push(file_id);
 
@@ -88,13 +102,16 @@ function pre_delete_file(file_id, username_C, file_name) {
 
   fetch("/predelete", {
     method: "POST",
-    body: JSON.stringify({files_ids, username_d}),
+    body: JSON.stringify({files_ids, user_id}),
     headers: {
         'content-type': 'application/json'
     }
 }).then(data=>{return data.json();}).then(function (res) {
     if(res.message=="success")
     location.reload();
+    else if(res.keyword=="space"){
+      alert(res.desc);
+          }
     else
     alert("something went wrong!");
 });
@@ -114,15 +131,19 @@ document.querySelector("#del-multiple").addEventListener("click", function (e) {
 if(!userChoice)
 return false;
 
+var user_id=$("#id_sp").text();
   fetch("/predelete", {
     method: "POST",
-    body: JSON.stringify({files_ids}),
+    body: JSON.stringify({files_ids, user_id}),
     headers: {
         'content-type': 'application/json'
     }
 }).then(data=>{return data.json();}).then(function (res) {
     if(res.message=="success")
     location.reload();
+    else if(res.keyword=="space"){
+alert(res.desc);
+    }
     else
     alert("something went wrong!");
 });
