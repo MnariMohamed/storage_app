@@ -1,5 +1,6 @@
 // your file input
-document.querySelector("#uploadNow").addEventListener("click", function () {
+document.querySelector("#uploadNow").addEventListener("click", async function () {
+var should_continue=true;
   var files=document.getElementById('form-file').files;
   var file;
   var i;
@@ -8,7 +9,6 @@ document.querySelector("#uploadNow").addEventListener("click", function () {
 var files_s_G=0;
 var free_sp=parseFloat(document.querySelector("#free_sp").textContent);
 var username=document.querySelector("#username_sp").textContent;
-
 for(i=0; i<files.length;i++){
   file=files[i];
   files_s_G+=file.size / Math.pow(1000, 3);
@@ -19,8 +19,24 @@ for(i=0; i<files.length;i++){
     $( "#progress" ).text(free_sp.toFixed(4)+" GB is not enough space!")
   return false;
   }
+  await fetch("/file_exitence/"+files[i].name)
+  .then(data=>{return data.json();}).then(function (res) {
+    if(res.message=="success")
+{
+  $('#progress').removeClass("alert-warning");
+  $( "#progress" ).removeClass( "alert-success" );
+  $( "#progress" ).addClass( "alert-danger" );
+  alert("duplicate file name! change the name of '"+res.file_name+"'");
+  should_continue=false;
+  return false;
+} 
+ });
+
 }
     for(i=0; i<files.length;i++){
+      if(should_continue==false)
+      return false;
+
       file=files[i];
 
 
@@ -56,11 +72,10 @@ console.log(res_count, files.length);
         });
         }
         else{
-          if(xhr.target.response.desc=="file exists"){
-            alert("duplicate file name! change file name");
-          }
-          else
-          alert("something went wrong!");
+            alert("something went wrong!");
+            $('#progress').removeClass("alert-warning");
+            $( "#progress" ).removeClass( "alert-success" );
+            $( "#progress" ).addClass( "alert-danger" );
         }
       }
 

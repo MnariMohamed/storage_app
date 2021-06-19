@@ -1,4 +1,4 @@
-function delete_file(file_id, username_d, deleted_u=false, file_name, user_id) {
+function delete_file(file_id, username_d, deleted_u=false, file_name, user_id, b_id) {
     var userChoice =confirm("are you sure you wanna delete \r\n"+file_name+" ?");
   if(!userChoice)
   return false;
@@ -13,7 +13,9 @@ function delete_file(file_id, username_d, deleted_u=false, file_name, user_id) {
       }
   }).then(data=>{return data.json();}).then(function (res) {
       if(res.message=="success"){
+        document.querySelector("#"+b_id).parentElement.parentElement.style.display="none";
         update_user_space(user_id);
+
       }
       else
       alert("something went wrong!");
@@ -67,6 +69,11 @@ function delete_multiple(class_name,username_d, deleted_u=false, user_id) {
       if (idx === arr.length - 1){ 
         if(res.message=="success")
 {
+  document.querySelectorAll("."+class_name).forEach(function (checkbox) {
+    if(checkbox.checked){
+checkbox.parentElement.parentElement.style.display="none";
+    }
+  });
   update_user_space(user_id);
 }        else
         alert("something went wrong!");
@@ -92,7 +99,7 @@ hide_details();
 
 
 //restore file
-function restore_file(file_id, file_name, free_space, file_size, user_id) {
+function restore_file(file_id, file_name, free_space, file_size, user_id, b_id) {
   var free_space=parseFloat(free_space);
   var file_size=parseFloat(file_size);
 
@@ -114,18 +121,8 @@ return false;
       }
   }).then(data=>{return data.json();}).then(function (res) {
       if(res.message=="success"){
-        fetch("/update/user_space", {
-          method: "POST",
-          body: JSON.stringify({user_id}),
-          headers: {
-              'content-type': 'application/json'
-          }
-      }).then(data=>{return data.json();}).then(function (res) {
-        if(res.message=="success")
-        location.reload();
-        else
-        alert("something went wrong!");
-      });
+        document.querySelector("#"+b_id).parentElement.parentElement.style.display="none";
+update_user_space(user_id);
       }
           else
       alert("something went wrong!");
@@ -165,20 +162,12 @@ files_ids.forEach(function (file_id, idx, arr) {
   }).then(data=>{return data.json();}).then(function (res) {
     if (idx === arr.length - 1){ 
       if(res.message=="success"){
-
-        fetch("/update/user_space", {
-          method: "POST",
-          body: JSON.stringify({user_id}),
-          headers: {
-              'content-type': 'application/json'
+        document.querySelectorAll("."+class_name).forEach(function (checkbox) {
+          if(checkbox.checked){
+      checkbox.parentElement.parentElement.style.display="none";
           }
-      }).then(data=>{return data.json();}).then(function (res) {
-        if(res.message=="success")
-        location.reload();
-        else
-        alert("something went wrong!");
-      });
-
+        });
+update_user_space(user_id);
       }
 
       else
@@ -292,7 +281,7 @@ function update_user_space(user_id) {
     }
   }).then(data=>{return data.json();}).then(function (res) {
   if(res.message=="success")
-  location.reload();
+return true;
   else
   alert("something went wrong!");
   });

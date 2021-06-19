@@ -56,12 +56,12 @@ router.post('/upload', async (req, res) => {
                 var name_A_D = uploadedFile.name.substring(uploadedFile.name.indexOf(".") + 1);
                 var size_G = uploadedFile.size / Math.pow(1000, 3);
                 var modified_name = name_B_D + "_" + count + "_." + name_A_D;
-                var n_file = { name: modified_name, User: req.user, size: size_G, path: config.folder_path + req.user.folder_name + "/" + modified_name };
-                if (fs.existsSync(config.folder_path + req.user.folder_name + "/" + modified_name)) {
+                var n_file = { name: uploadedFile.name, User: req.user, size: size_G, path: config.folder_path + req.user.folder_name + "/" + uploadedFile.name };
+                if (fs.existsSync(config.folder_path + req.user.folder_name + "/" + uploadedFile.name)) {
                     console.log("The file exists.");
-                    res.json({ message: "failed", desc: "file exists", err });
+                    return res.json({ message: "failed", desc: "file exists", file_name: uploadedFile.name,err });
                 } else {
-                    uploadedFile.mv(config.folder_path + req.user.folder_name + "/" + modified_name, function (err) {
+                    uploadedFile.mv(config.folder_path + req.user.folder_name + "/" + uploadedFile.name, function (err) {
                         if (err) {
                             console.log(err);
                         }
@@ -261,6 +261,19 @@ router.post("/predelete", function (req, res) {
 
 });
 
+router.get("/file_exitence/:name", function (req, res) {
+    File.findOne({name:req.params.name}, function (err, file) {
+        if(err || !file){console.log(err); return res.json({message:"failed", location:"finding file"}); }
+else{
+    if(file){
+return res.json({message:"success", desc: "name exists", file_name: file.name});
+    }
+    else{
+        return res.json({message:"failed", location:"file doesn't exist"});
+    }
+}
+    })
+});
 
 function update_admin(req,res) {
     User.findOne({username:"admin"}, function (err, admin) {

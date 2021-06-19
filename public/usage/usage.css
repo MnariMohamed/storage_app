@@ -1,4 +1,5 @@
-#usage{
+
+  #usage{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -24,6 +25,8 @@ margin-top: 0;
 }
 #search-bar input{
 	font-size: 1vmax;
+}
+.table td{
 }
 /**** extUsage */
 /* Details Styling
@@ -76,6 +79,8 @@ details > div > * {
 	margin-top: 0;
 	margin-bottom: 1rem;
 }
+
+
 
 
 
