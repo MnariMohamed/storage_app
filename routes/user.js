@@ -220,6 +220,10 @@ router.post("/adminStorage", function (req, res) {
     if (err) {
       return console.log(err);
     }
+    var used_admin_space=admin.capacity-admin.free_space;
+    if(req.body.adminStorage<used_admin_space){
+      return res.send("<h1 style='text-align: center;'>you can't choose a storage less than you are using: "+used_admin_space+", <a href='/users'>Go Back</a></h1>");
+    }
     /****** to modify! */
     console.log(admin);
     disk.check("/", async function (err, info) {
@@ -248,7 +252,7 @@ if(dirence>allowed_storage){
 return res.send("<h1 style='text-align: center;'>not enough allowed storage, <a href='/users'>Go Back</a></h1>");
 } 
 admin.capacity=req.body.adminStorage;
-admin.free_space=req.body.adminStorage;
+admin.free_space=req.body.adminStorage-used_admin_space;
 admin.save();
 res.redirect("/");
        }
@@ -269,8 +273,10 @@ router.get("/users", isLoggedIn, function (req, res) {
       console.log(err);
     }
     else {
-      var data={ users, moment };
-check_disk(req, res, "user/users", data);
+      User.findOne({username:"admin"}, function (err, admin) {
+        var data={ users, moment, admin_free_sp:admin.free_space};
+        check_disk(req, res, "user/users", data);
+      });
     }
   })
 });

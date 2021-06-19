@@ -71,6 +71,8 @@ function delete_multiple(class_name,username_d, deleted_u=false, user_id) {
 {
   document.querySelectorAll("."+class_name).forEach(function (checkbox) {
     if(checkbox.checked){
+      console.log(checkbox.parentElement.parentElement);
+      checkbox.checked=false;
 checkbox.parentElement.parentElement.style.display="none";
     }
   });
@@ -137,6 +139,7 @@ function restore_multiple(class_name, user_id, free_space) {
   document.querySelectorAll("."+class_name).forEach(function (checkbox, i, arr) {
     if(checkbox.checked){
       files_ids.push(checkbox.name);
+      console.log(i);
       total_size+=parseFloat(document.querySelector("#check-c-u-"+i).getAttribute("data"));
       files_list+="\r\n"+checkbox.parentElement.parentElement.getAttribute("name");
     }
@@ -164,6 +167,7 @@ files_ids.forEach(function (file_id, idx, arr) {
       if(res.message=="success"){
         document.querySelectorAll("."+class_name).forEach(function (checkbox) {
           if(checkbox.checked){
+            checkbox.checked=false;
       checkbox.parentElement.parentElement.style.display="none";
           }
         });

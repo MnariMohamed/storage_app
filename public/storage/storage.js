@@ -9,6 +9,8 @@ var should_continue=true;
 var files_s_G=0;
 var free_sp=parseFloat(document.querySelector("#free_sp").textContent);
 var username=document.querySelector("#username_sp").textContent;
+var user_id=document.querySelector("#id_sp").textContent;
+
 for(i=0; i<files.length;i++){
   file=files[i];
   files_s_G+=file.size / Math.pow(1000, 3);
@@ -19,7 +21,7 @@ for(i=0; i<files.length;i++){
     $( "#progress" ).text(free_sp.toFixed(4)+" GB is not enough space!")
   return false;
   }
-  await fetch("/file_exitence/"+files[i].name)
+  await fetch("/file_exitence/"+files[i].name+"/"+user_id)
   .then(data=>{return data.json();}).then(function (res) {
     if(res.message=="success")
 {

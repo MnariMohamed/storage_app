@@ -103,6 +103,7 @@ router.post('/upload', async (req, res) => {
 router.post("/update/user_space", function (req, res) {
     User.findOne({_id:req.body.user_id}, function (err, user) {
         if(err){console.log(err); return res.json({message:"failed", location:"finding user"}); }
+        if(!user){console.log("user not found"); return false;}
         File.find({User: user, pre_deleted: false}, function (err, files) {
     if(err || !files){console.log(err); return res.json({message:"failed"});}
     console.log(files);
@@ -261,8 +262,8 @@ router.post("/predelete", function (req, res) {
 
 });
 
-router.get("/file_exitence/:name", function (req, res) {
-    File.findOne({name:req.params.name}, function (err, file) {
+router.get("/file_exitence/:name/:user_id", function (req, res) {
+    File.findOne({name:req.params.name, User:req.params.user_id}, function (err, file) {
         if(err || !file){console.log(err); return res.json({message:"failed", location:"finding file"}); }
 else{
     if(file){
