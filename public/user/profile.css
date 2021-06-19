@@ -18,3 +18,6 @@ width: max-content;
 min-width: 50%;
 margin: auto;
 }
+#adduser{
+    margin-top: 0 !important;
+}

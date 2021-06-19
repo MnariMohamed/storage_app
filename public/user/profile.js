@@ -1,4 +1,4 @@
-$(".alert").hide();
+  $(".alert").hide();
 function update_user(username) {
   var n_username=$("#inputUsername").val();
   let new_pass=$("#inputPassword").val();
@@ -29,7 +29,41 @@ function update_user(username) {
 });
 }
 
-sizing("#profile");
+//delete user
+function delete_user(username) {
+  
+  var userChoice =
+   prompt("*****Important please read before Confirming*******\r\nDelete files too?\r\nusername-all to delete user and his files.\r\nusername to delete only user.");
+var deleteFiles=false;
+if(userChoice==username+"-all" || userChoice==username){
+  if(userChoice==username+"-all")
+  deleteFiles=true;
+  else{
+     deleteFiles=false;
+  }
+
+          fetch("/user", {
+              method: "DELETE",
+              body: JSON.stringify({username, deleteFiles}),
+              headers: {
+                  'content-type': 'application/json'
+              }
+          }).then(data=>{return data.json();}).then(function (res) {
+              if(res.message=="success")
+              window.location.href = "/users";
+            });
+}
+else
+return;
+}
+
+
+
+
+
+
+
+sizing(".background-container");
 window.addEventListener("resize", function () {
-  sizing("#profile");
+  sizing(".background-container");
 });

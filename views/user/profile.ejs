@@ -1,6 +1,6 @@
 <%- include('../partials/header') -%>
 <link rel="stylesheet" href="/user/user.css">
-
+<link rel="stylesheet" href="/user/profile.css">
 <div class="background-container" class="card">
 
     <div id="adduser" class="w-50 top-m shadow-lg p-3 mb-5 rounded">
@@ -40,7 +40,7 @@
       </div>
       <br/>
       <button id="savebutton" type="button" class="btn btn-greeng" onclick="update_user('<%=user.username%>')">Save</button>
-
+      <button onclick="delete_user('<%=user.username%>')" id="delete-u" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Delete User</button>
     </div>
     
     </div>
