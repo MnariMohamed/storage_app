@@ -190,6 +190,64 @@ files_ids.forEach(function (file_id, idx, arr) {
 
 }
 
+//predelete file
+function pre_delete_file(file_id, user_id, file_name) {
+  var files_ids=[];
+  files_ids.push(file_id);
+
+  var userChoice =confirm("are you sure you wanna delete\r\n"+file_name+" ?");
+  if(!userChoice)
+  return false;
+
+  fetch("/predelete", {
+    method: "POST",
+    body: JSON.stringify({files_ids, user_id}),
+    headers: {
+        'content-type': 'application/json'
+    }
+}).then(data=>{return data.json();}).then(function (res) {
+    if(res.message=="success")
+    location.reload();
+    else if(res.keyword=="space"){
+      alert(res.desc);
+          }
+    else
+    alert("something went wrong!");
+});
+};
+
+//predelete multiple
+function pre_delete_multi(user_index, user_id) {
+  
+var files_ids=[];
+  var files_list="";
+  document.querySelectorAll(".check-file-u-"+user_index).forEach(function (checkbox) {
+    if(checkbox.checked){
+      files_ids.push(checkbox.name);
+      files_list+="\r\n"+checkbox.parentElement.parentElement.getAttribute("name");
+    }
+  });
+  var userChoice =confirm("are you sure you wanna delete \r\n"+files_list+" files?");
+if(!userChoice)
+return false;
+
+  fetch("/predelete", {
+    method: "POST",
+    body: JSON.stringify({files_ids, user_id}),
+    headers: {
+        'content-type': 'application/json'
+    }
+}).then(data=>{return data.json();}).then(function (res) {
+    if(res.message=="success")
+    location.reload();
+    else if(res.keyword=="space"){
+alert(res.desc);
+    }
+    else
+    alert("something went wrong!");
+});
+}  
+
 
 
 function search(e) {

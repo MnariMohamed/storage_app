@@ -1,16 +1,26 @@
 body{
     background: linear-gradient(to right, #246ace, #12499d);
   }
+  @font-face {
+    font-family: "lobster";
+    src: url("/fonts/Lobster/Lobster-Regular.ttf");
+    src: url("/fonts/Lobster/Lobster-Regular.ttf") format("woff");
+    }
   #head{
   height: min-content;
-  background-color: #1F1F1F;
+  background-color: #666666;
   width: 100%;
   padding-left: 150px;
 }
   
-  #title{
-    color: white;
+#head #title{
+  color: white;
     text-decoration: none;
+    font-size: 1.3vmax;
+    font-family: lobster !important;
+    font-style: italic;
+  }
+  #title img{
   }
   #headin{
     width: 100%;
@@ -51,7 +61,7 @@ color: white;
   }
 
   .w3-dropdown-hover:first-child, .w3-dropdown-click:hover{
-    background-color: #1F1F1F !important;
+    background-color: #666666 !important;
   }
   .reded{
 background-color: #FF0000 !important;
@@ -69,7 +79,9 @@ color: white !important;
       font-size: 12px;
     }
     #head #title{
-      font-size: 13px;
+      font-size: larger;
+      font-family: lobster ;
+      font-style: italic;
     }
     }
   

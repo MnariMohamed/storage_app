@@ -209,8 +209,8 @@
                         <div style="overflow-x:auto;">
                             <table class="table" style="width:100%">
                                 <tr>
-                                    <th><button onclick="delete_multiple('check-file-u','<%=users[i].username%>', true,'<%=users[i]._id%>')"
-                                            id="del-multiple" class="btn btn-danger">Del</button></th>
+                                    <th><button id="pre-del-multiple-<%=i%>" 
+                                        onclick="pre_delete_multi('<%=i%>', '<%= users[i]._id%>')" class="btn btn-danger">Del</button></th>
                                     <th>File Name</th>
                                     <th>Date</th>
                                     <th>Size</th>
@@ -220,7 +220,7 @@
                                     <%if(client_files[j].User.username==users[i].username){%>
                                         <tr name="<%=client_files[j].name%>">
                                             <td style="">
-                                                <input style="" class="check-file-u" type="checkbox" id="check-<%=i%>"
+                                                <input style="" class="check-file-u-<%=i%>" type="checkbox" id="check-<%=i%>"
                                                     name="<%=client_files[j]._id%>" value="">
                                             </td>
                                             <td><a href="/download_file/<%=client_files[j]._id%>">
@@ -233,8 +233,7 @@
                                                 <%=client_files[j].size.toFixed(4) %>
                                             </td>
                                             <td><button
-                                                    onclick="delete_file('<%=client_files[j]._id%>','<%=users[i].username%>', false, '<%=client_files[j].name%>', '<%=users[i]._id%>');"
-                                                    id="delete_f<%=i%>_<%=j%>" class="btn btn-danger">Delete</button>
+                                                    onclick="pre_delete_file('<%=client_files[j]._id%>','<%=users[i]._id%>', '<%=client_files[j].name%>');" class="btn btn-danger">Delete</button>
                                             </td>
                                         </tr>
                                         <%}%>
