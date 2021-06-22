@@ -115,7 +115,8 @@ router.put("/update/user", async function (req, res) {
           if (err) { console.log(err); res.json({ message: "failed", location: "update capacity" }); }
           else {
             var difference = capacity - userC.capacity;
-if(allowed_storage<difference) return res.json({message:"failed", description:"space not enough"});
+            var usedSpace=userC.capacity-userC.free_space;
+if(allowed_storage<difference || usedSpace>capacity) return res.json({message:"failed", description:"space not enough or used"});
 
             userC.capacity = capacity;
             userC.free_space = userC.free_space + difference;
