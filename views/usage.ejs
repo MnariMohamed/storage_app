@@ -19,6 +19,7 @@
     <table class="table" style="width:100%">
         <tr>
             <th>File Name</th>
+            <th>User</th>
             <th>Date</th>
             <th>Size</th>
             <th>Action</th>
@@ -47,7 +48,9 @@
                                         <div style="overflow-x:auto;">
                                             <table class="table" style="width:100%">
                                                 <tr>
-                                                    <th><button
+                                                    <th>
+                                                        <input onclick="select_all('check-file-pd-u-<%=users[u].username%>')" type="checkbox" name="" class="select-all">
+                                                        <button
                                                         onclick="delete_multiple('check-file-pd-u-<%=users[u].username%>','<%=users[u].username%>', false, '<%=users[u]._id%>')"
                                                         id="del-multiple" class="btn btn-danger">Del</button>
                                                         <button
@@ -101,7 +104,9 @@
                                                 <div style="overflow-x:auto;">
                                                     <table class="table" style="width:100%">
                                                         <tr>
-                                                            <th><button
+                                                            <th>
+                                                                <input onclick="select_all('check-file-pd-d-u-<%=d_users[du].username%>')" type="checkbox" name="" class="select-all">
+                                                                <button
                                                                 onclick="delete_multiple('check-file-pd-d-u-<%=d_users[du].username%>','<%=d_users[du].username%>', true, '<%=d_users[du]._id%>')"
                                                                 id="del-multiple" class="btn btn-danger">Del</button>
                                                                 <!--button
@@ -160,8 +165,10 @@
                                 <div style="overflow-x:auto;">
                                     <table class="table" style="width:100%">
                                         <tr>
-                                            <th><button
-                                                    onclick="delete_multiple('check-file-d-u','<%=d_users[i].username%>', true, '<%=d_users[i]._id%>')"
+                                            <th>
+                                                <input onclick="select_all('check-file-d-u-<%=d_users[i].username%>')" type="checkbox" name="" class="select-all">
+                                                <button
+                                                    onclick="delete_multiple('check-file-d-u-<%=d_users[i].username%>','<%=d_users[i].username%>', true, '<%=d_users[i]._id%>')"
                                                     id="del-multiple" class="btn btn-danger">Del</button></th>
                                             <th>File Name</th>
                                             <th>Date</th>
@@ -172,7 +179,7 @@
                                             <%if(d_user_files[j].Deleted_user.username==d_users[i].username){%>
                                                 <tr name="<%=d_user_files[j].name%>">
                                                     <td style="">
-                                                        <input style="" class="check-file-d-u" type="checkbox"
+                                                        <input style="" class="check-file-d-u-check-file-d-u-<%=d_users[i].username%>" type="checkbox"
                                                             id="check-<%=i%>" name="<%=d_user_files[j]._id%>" value="">
                                                     </td>
                                                     <td><a href="/download_file/<%=d_user_files[j]._id%>">
@@ -209,7 +216,9 @@
                         <div style="overflow-x:auto;">
                             <table class="table" style="width:100%">
                                 <tr>
-                                    <th><button id="pre-del-multiple-<%=i%>" 
+                                    <th>
+                                        <input onclick="select_all('check-file-u-<%=i%>')" type="checkbox" name="" class="select-all">
+                                        <button id="pre-del-multiple-<%=i%>" 
                                         onclick="pre_delete_multi('<%=i%>', '<%= users[i]._id%>')" class="btn btn-danger">Del</button></th>
                                     <th>File Name</th>
                                     <th>Date</th>

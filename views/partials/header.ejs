@@ -22,21 +22,20 @@
 
       <%if(currentUser){%>
       <div class="headimg">
-        <img src="/images/icons/user.svg" alt="" class="align-middle">
+        <%if(currentUser.username=="admin"){%>
+          <img src="/images/icons/user.svg" alt="" class="align-middle">
 <div id="profile-settings" class="w3-dropdown-hover">
   <button id="dropdownside" class="w3-button">
     <%= currentUser.username %> <img src="/images/icons/settings.svg" alt="">
   </button>
   <div class="w3-dropdown-content w3-bar-block drop-content" style="">
-
-    <%if(currentUser.username!="admin"){%>
-    <a href="/user_info" class="w3-bar-item w3-button nav">Change Pass</a>
-    <% } else{%>
       <a href="/users" class="w3-bar-item w3-button nav">Users</a>      
-      <% }%>
-
     </div>
 </div>
+<% } else{%>
+<a href="/user_info" style="padding: 1vmax;"><img src="/images/icons/padlock.svg" alt="" class="align-middle"></a>
+<%}%>
+&nbsp;
 <a href="/logout" class="w3-bar-item w3-button nav reded">Logout</a>
       </div>
      <% }%>

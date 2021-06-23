@@ -166,7 +166,9 @@ alert(res.desc);
 });
 });
 
-
+function select_all(className) {
+  $("."+className).prop( "checked", true );
+}
 
 sizing("#storage");
 window.addEventListener("resize", function () {

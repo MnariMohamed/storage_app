@@ -88,7 +88,7 @@ router.put("/update/user", async function (req, res) {
   var capacity = req.body.capacity;
   var n_username = req.body.n_username;
 
-  disk.check("/", async function (err, info) {
+  disk.check(config.folder_path, async function (err, info) {
     var free_disk_sp_G = info.free;
     console.log(free_disk_sp_G);
     User.find({}, async function (err, users) {
@@ -185,32 +185,8 @@ router.get("/edit_profile/:user_id", isLoggedIn, function (req, res) {
   User.findOne({ _id: req.params.user_id }, function (err, user) {
     if (err) return res.json({ message: "failed" });
 
-    disk.check("/", async function (err, info) {
-      var free_disk_sp_G = info.free;
-      console.log(free_disk_sp_G);
-      User.find({}, async function (err, users) {
-        if (err) { console.log(err); res.json({ message: "fail" }) }
-        else {
-          var temp_used = 0;
-          var original_free_disk = 0;
-          var used_users_storage = 0;
-          var allowed_storage = 0;
-          var total_users_storage = 0;
-          await users.forEach(t_user => {
-            temp_used = t_user.capacity - t_user.free_space;
-            used_users_storage += temp_used;
-            total_users_storage += t_user.capacity;
-          });
-          total_users_storage = total_users_storage * Math.pow(1000, 3);
-          console.log(used_users_storage, total_users_storage);
-          original_free_disk = free_disk_sp_G - used_users_storage;
-          allowed_storage = original_free_disk - total_users_storage;
-          allowed_storage = allowed_storage / Math.pow(1000, 3);
-          res.render("user/profile", { free_disk_sp_G, allowed_storage, user });
-        }
-      });
-    });
-
+    var data = { user };
+    check_disk(req, res, "user/profile", data);
   })
 });
 
@@ -225,7 +201,7 @@ router.post("/adminStorage", function (req, res) {
       return res.send("<h1 style='text-align: center;'>you can't choose a storage less than you are using: " + used_admin_space + ", <a href='/users'>Go Back</a></h1>");
     }
     /****** ! */
-    disk.check("/", async function (err, info) {
+    disk.check(config.folder_path, async function (err, info) {
       var free_disk_sp_G = info.free;
       console.log(free_disk_sp_G);
       User.find({}, async function (err, users) {
@@ -305,31 +281,9 @@ router.get("/register", isLoggedIn, function (req, res) {
     return res.redirect("/login");
 
   // get disk usage.
-  disk.check("/", async function (err, info) {
-    var free_disk_sp_G = info.free;
-    console.log(free_disk_sp_G);
-    User.find({}, async function (err, users) {
-      if (err) { console.log(err); res.json({ message: "fail" }) }
-      else {
-        var temp_used = 0;
-        var original_free_disk = 0;
-        var used_users_storage = 0;
-        var allowed_storage = 0;
-        var total_users_storage = 0;
-        await users.forEach(t_user => {
-          temp_used = t_user.capacity - t_user.free_space;
-          used_users_storage += temp_used;
-          total_users_storage += t_user.capacity;
-        });
-        total_users_storage = total_users_storage * Math.pow(1000, 3);
-        console.log(used_users_storage, total_users_storage);
-        original_free_disk = free_disk_sp_G - used_users_storage;
-        allowed_storage = original_free_disk - total_users_storage;
-        allowed_storage = allowed_storage / Math.pow(1000, 3);
-        res.render("user/adduser", { free_disk_sp_G, allowed_storage });
-      }
-    });
-  });
+  var data = { };
+  check_disk(req, res, "user/adduser", data);
+
 });
 
 
@@ -418,9 +372,8 @@ router.get("/", function (req, res) {
 
 //***** functions */
 function check_disk(req, res, view, data) {
-  disk.check("/", async function (err, info) {
+  disk.check(config.folder_path, async function (err, info) {
     var free_disk_sp_G = info.free;
-    console.log(free_disk_sp_G);
     User.find({}, async function (err, users) {
       if (err) { console.log(err); res.json({ message: "fail" }) }
       else {
@@ -440,6 +393,7 @@ function check_disk(req, res, view, data) {
         allowed_storage = original_free_disk - total_users_storage;
         allowed_storage = allowed_storage / Math.pow(1000, 3);
         data["allowed_storage"] = allowed_storage;
+        data["free_disk_sp_G"] = free_disk_sp_G;
         res.render(view, data);
       }
     });

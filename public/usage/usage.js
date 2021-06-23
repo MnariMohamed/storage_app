@@ -203,21 +203,21 @@ function restore_multiple(class_name, user_id, free_space) {
               checkbox.checked = false;
               checkbox.parentElement.parentElement.style.display = "none";
             }
-                //hide detail
-   if(check_index==check_arr.length-1){
-    var tr_count=0;
-    var current_table=checkbox.parentElement.parentElement.parentElement;
-    Array.prototype.forEach.call(current_table.children, (tr, tr_indx, tr_arr) => {
-      if(tr.style.display!="none")
-      tr_count++;
-      if(tr_indx==tr_arr.length-1){
-        if(tr_count<=1){
-          current_table.parentElement.parentElement.parentElement.parentElement.style.display="none";
-           }
-      }
-    });
+            //hide detail
+            if (check_index == check_arr.length - 1) {
+              var tr_count = 0;
+              var current_table = checkbox.parentElement.parentElement.parentElement;
+              Array.prototype.forEach.call(current_table.children, (tr, tr_indx, tr_arr) => {
+                if (tr.style.display != "none")
+                  tr_count++;
+                if (tr_indx == tr_arr.length - 1) {
+                  if (tr_count <= 1) {
+                    current_table.parentElement.parentElement.parentElement.parentElement.style.display = "none";
+                  }
+                }
+              });
 
-}
+            }
           });
           update_user_space(user_id);
         }
@@ -308,8 +308,10 @@ function search(e) {
           fileName = file.name.split(' ').join('_');
           document.querySelector(".search-tbody").innerHTML += "<tr class='' name=''> <td><a href='/download_file/" + file._id + "'>" + file.name
             + "</a></td>  <td>" +
-            file.date +
+            username +
             "</td> <td>" +
+            file.date
+          "</td> <td>" +
             file.size.toFixed(4) +
             "</td>  <td><button style='margin-right:1%' onclick=delete_file('" + file._id + "','" + username + "','" + deletedUser + "','" + fileName + "'); id='' class='btn btn-danger'>Delete</button>" +
             "<button style='display: " + restoreDisplay + "' onclick=restore_file('" + file._id + "','" + fileName + "'); class='btn btn-success'>Restore</button>"
@@ -338,6 +340,8 @@ function update_user_space(user_id) {
   });
 }
 
-
-
+//select files
+function select_all(className) {
+  $("." + className).prop("checked", true);
+}
 

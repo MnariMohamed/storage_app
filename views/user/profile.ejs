@@ -30,7 +30,7 @@
       <div class="mb-3 row">
                <label for="capacity" class="col-sm-3 col-form-label">Storage Limit</label>
         <div class="col-sm-3">
-          <input type="text" class="form-control" id="capacity"  value="<%=user.capacity%>">
+          <input type="number" class="form-control" id="capacity"  value="<%=user.capacity%>">
         </div>   
         GB
       </div>
@@ -42,7 +42,7 @@
         User not updated
       </div>
       <br/>
-      <button id="savebutton" type="button" class="btn btn-greeng" onclick="update_user('<%=user.username%>')">Save</button>
+      <button id="savebutton" type="button" class="btn btn-greeng" onclick="update_user('<%=user.username%>', '<%= allowed_storage.toFixed(4) %>', '<%=user.capacity%>')">Save</button>
       <button onclick="delete_user('<%=user.username%>')" id="delete-u" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Delete User</button>
     </div>
     

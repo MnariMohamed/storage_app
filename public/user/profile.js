@@ -7,10 +7,19 @@ function showPassword(){
 }  
   
   $(".alert").hide();
-function update_user(username) {
+function update_user(username, allowed_storage, old_cap) {
   var n_username=$("#inputUsername").val();
   let new_pass=$("#inputPassword").val();
   var capacity=$("#capacity").val();
+ var allowedStorage=parseFloat(allowed_storage);
+
+ var cap_dif=capacity-parseFloat(old_cap);
+ if(cap_dif>allowedStorage){
+  $("#userupdated").hide();
+  $("#updatefailed").show("slow");
+  alert("not enough allowed storage");
+   return false;
+ }
 
   fetch("/update/user", {
     method: "PUT",
