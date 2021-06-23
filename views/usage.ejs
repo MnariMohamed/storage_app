@@ -48,10 +48,10 @@
                                             <table class="table" style="width:100%">
                                                 <tr>
                                                     <th><button
-                                                        onclick="delete_multiple('check-file-pd-u','<%=users[u].username%>', true, '<%=users[u]._id%>')"
+                                                        onclick="delete_multiple('check-file-pd-u-<%=users[u].username%>','<%=users[u].username%>', false, '<%=users[u]._id%>')"
                                                         id="del-multiple" class="btn btn-danger">Del</button>
                                                         <button
-                                                        onclick="restore_multiple('check-file-pd-u', '<%=users[u]._id%>', '<%=users[u].free_space%>')"
+                                                        onclick="restore_multiple('check-file-pd-u-<%=users[u].username%>', '<%=users[u]._id%>', '<%=users[u].free_space%>')"
                                                         id="rest-multiple" class="btn btn-success">Rest</button></th></th>
                                                     <th>File Name</th>
                                                     <th>Date</th>
@@ -64,7 +64,7 @@
                                                         if(pre_d_files[pd].User.username==users[u].username){ %>
                                                         <tr class="del-f-tr" name="<%=pre_d_files[pd].name%>">
                                                             <td style="">
-                                                                <input style="" class="check-file-pd-u" type="checkbox"
+                                                                <input style="" class="check-file-pd-u-<%=users[u].username%>" type="checkbox"
                                                                     id="check-c-u-<%=pd%>" name="<%=pre_d_files[pd]._id%>" data=<%=pre_d_files[pd].size%> value="">
                                                                     <% let result = pre_d_files.map(({ size }) => size)
                                                                     %>
@@ -102,7 +102,7 @@
                                                     <table class="table" style="width:100%">
                                                         <tr>
                                                             <th><button
-                                                                onclick="delete_multiple('check-file-pd-d-u','<%=d_users[du].username%>', true, '<%=d_users[du]._id%>')"
+                                                                onclick="delete_multiple('check-file-pd-d-u-<%=d_users[du].username%>','<%=d_users[du].username%>', true, '<%=d_users[du]._id%>')"
                                                                 id="del-multiple" class="btn btn-danger">Del</button>
                                                                 <!--button
                                                                 onclick="restore_multiple('check-file-pd-d-u')"
@@ -118,7 +118,7 @@
                                                             %>
                                                             <tr class="del-f-tr" name="<%=pre_d_files[pd].name%>">
                                                                 <td style="">
-                                                                    <input style="" class="check-file-pd-d-u" type="checkbox"
+                                                                    <input style="" class="check-file-pd-d-u-<%=d_users[du].username%>" type="checkbox"
                                                                         id="check-<%=du%>" name="<%=pre_d_files[pd]._id%>" value="">
                                                                 </td>
                                                                 <td><a href="/download_file/<%=pre_d_files[pd]._id%>">

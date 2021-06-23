@@ -18,20 +18,6 @@
 <nav id="head" class="navbar navbar-light">
     <div id="headin" class="">
 
-      <%if(currentUser){%>
-        <%if(currentUser.username=="admin"){%>
-      <div id="users-settings" class="w3-dropdown-hover">
-        <button id="dropdownside1" class="w3-button">
-          Manage Users <img src="/images/icons/down-filled-triangular-arrow.svg" alt="">
-        </button>
-        <div class="w3-dropdown-content w3-bar-block drop-content" style="">
-            <a href="/register" class="w3-bar-item w3-button nav">Add User</a>
-          <a href="/users" class="w3-bar-item w3-button nav">Users</a>      
-        </div>
-      </div>
-      <% }%>
-      <% }%>
-
      <a id="title" href="/"><img src="/images/logopng.png" alt="" style="width: 30%;"> Storage</a>
 
       <%if(currentUser){%>
@@ -44,15 +30,14 @@
   <div class="w3-dropdown-content w3-bar-block drop-content" style="">
 
     <%if(currentUser.username!="admin"){%>
-      <a href="/storage" class="w3-bar-item w3-button nav">My Storage</a>
     <a href="/user_info" class="w3-bar-item w3-button nav">Change Pass</a>
     <% } else{%>
-      <a href="/usage" class="w3-bar-item w3-button nav">Usage</a>
+      <a href="/users" class="w3-bar-item w3-button nav">Users</a>      
       <% }%>
 
-    <a href="/logout" class="w3-bar-item w3-button nav reded">Logout</a>
-  </div>
+    </div>
 </div>
+<a href="/logout" class="w3-bar-item w3-button nav reded">Logout</a>
       </div>
      <% }%>
 

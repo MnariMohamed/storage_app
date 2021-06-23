@@ -82,8 +82,7 @@ router.delete("/delete_folder", function (req, res) {
                                 Deleted_user.deleteOne({ username }, function (err) {
                                     if (err) return res.json({ message: "fail", location: "deleting user db" });
                                     else {
-                                        console.log("success 'as always ;)'");
-                                        return res.json({ message: "success" });
+                                        return update_admin(req, res);
                                     }
                                 });
                             });
@@ -92,8 +91,7 @@ router.delete("/delete_folder", function (req, res) {
                             Deleted_user.deleteOne({ username }, function (err) {
                                 if (err) return res.json({ message: "fail", location: "deleting user db" });
                                 else {
-                                    console.log("success 'as always ;)'");
-                                    return res.json({ message: "success" });
+                                    return update_admin(req, res);
                                 }
                             });
                         }
@@ -114,17 +112,35 @@ router.put("/restore/file", function (req, res) {
         if (err) return res.json({ message: "fail", location: "finding file" });
         User.findOne({ _id: file.User }, function (err, user) {
             if (err) return res.json({ message: "fail", location: "finding user" });
-           // if (user.free_space < file.size) return res.json({ message: "fail", desc: "user space full" });
-                        File.updateMany({ _id: { $in: files_ids } }, { pre_deleted: false }, function (err, files) {
-                            if (err) return res.json({ message: "fail", location: "updating files status" });
-                            else {
-                                console.log("success 'as always ;)'");
-                                return res.json({ message: "success" });
-                            }
-                        });
+            // if (user.free_space < file.size) return res.json({ message: "fail", desc: "user space full" });
+            File.updateMany({ _id: { $in: files_ids } }, { pre_deleted: false }, function (err, files) {
+                if (err) return res.json({ message: "fail", location: "updating files status" });
+                else {
+                    console.log("success 'as always ;)'");
+                    return res.json({ message: "success" });
+                }
+            });
 
         });
     });
 
 })
+
+
+//**** functions **********/
+function update_admin(req, res) {
+    User.findOne({ username: "admin" }, function (err, admin) {
+        if (err) { console.log(err); return res.json({ message: "failed", location: "finding admin" }); }
+        File.find({ pre_deleted: true }, function (err, pred_files) {
+            var pred_files_size_t = 0;
+            pred_files.forEach(function (pred_file) {
+                pred_files_size_t += pred_file.size;
+            });
+            admin.free_space = admin.capacity - pred_files_size_t;
+            admin.save(function () {
+                res.json({ message: "success" });
+            });
+        });
+    });
+}
 module.exports = router;

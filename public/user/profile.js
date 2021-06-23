@@ -1,3 +1,11 @@
+function showPassword(){
+  if($('#inputPassword').attr("type")=="password")
+  $('#inputPassword').attr("type","text");
+  else{
+    $('#inputPassword').attr("type","password");
+  }
+}  
+  
   $(".alert").hide();
 function update_user(username) {
   var n_username=$("#inputUsername").val();

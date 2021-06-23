@@ -21,3 +21,6 @@ margin: auto;
 #adduser{
     margin-top: 0 !important;
 }
+.view-img{
+    cursor: pointer;
+}
