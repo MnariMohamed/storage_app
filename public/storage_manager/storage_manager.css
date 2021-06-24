@@ -1,0 +1,17 @@
+#storage_manager{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.in-container{
+	background-color: white;
+    border-radius: 1vmax;
+	padding: 1%;
+	margin: auto;
+    height: 98%;
+width: 98%;
+}
+.in-container h2{
+text-align: center;
+color: #3F3C3C;
+}

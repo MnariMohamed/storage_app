@@ -20,8 +20,10 @@ router.delete('/user', isLoggedIn, function (req, res) {
       if (deleteFile) {
         //this part might change depending if the user will have multiple paths
         File.findOne({ User: the_user }, function (err, l_file) {
+          if(err || !l_file){console.log(err); return res.json({message:"fail", desc:"error or file not found"});}
           if (l_file) {
             var LF_path = l_file.path.substr(0, l_file.path.lastIndexOf("/"));
+            //removing folder, another alternative is to use config path for first param
             rimraf(LF_path, function () {
               File.deleteMany({ User: the_user }, function (err) {
                 if (err) { console.log(err); res.json({ message: "fail", location: "delete files" }); }
@@ -238,7 +240,7 @@ router.post("/adminStorage", function (req, res) {
 });
 
 
-//get uers
+//get users
 router.get("/users", isLoggedIn, function (req, res) {
   if (req.user.username != "admin")
     return res.redirect("/login");
@@ -316,10 +318,14 @@ router.post("/register", async function (req, res) {
 
 /////login routes
 router.get("/login/:status?", function (req, res) {
-  if (req.params.status == "fail")
-    res.render("login", { status: req.params.status });
-  else
-    res.render("login");
+  User.findOne({ username: 'admin' }, function (err, user) {
+    if (err) { console.log(err); return res.json({ message: "failed", err });}
+    else if (!user) {  return res.redirect("/");  }
+    else{
+      if (req.params.status == "fail") return res.render("login", { status: req.params.status });
+    else return res.render("login");
+    }
+  });
 });
 
 router.post("/login", passport.authenticate("local", {
@@ -343,10 +349,10 @@ function isLoggedIn(req, res, next) {
 
 /******* creating Admins */
 router.get("/", function (req, res) {
-  fetch('http://localhost:3020/admin').then((res0) => { return res0.json(); })
+  fetch('http://localhost:'+config.port+'/admin').then((res0) => { return res0.json(); })
     .then(function (resp) {
       if (resp.message != "exists") {
-        fetch('http://localhost:3020/register', {
+        fetch('http://localhost:'+config.port+'/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -355,7 +361,6 @@ router.get("/", function (req, res) {
         }).then((res1) => { console.log("admin created"); res.render("login"); });
       }
       else {
-        console.log("exists");
         if (req.user) {
           if (req.user.username == "admin")
             res.redirect("/usage");
@@ -373,6 +378,7 @@ router.get("/", function (req, res) {
 //***** functions */
 function check_disk(req, res, view, data) {
   disk.check(config.folder_path, async function (err, info) {
+    if(err){console.log(err); return res.json({message:"fail", desc: "check_disk failed"})}
     var free_disk_sp_G = info.free;
     User.find({}, async function (err, users) {
       if (err) { console.log(err); res.json({ message: "fail" }) }

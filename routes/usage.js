@@ -54,7 +54,7 @@ router.get("/usage", function (req, res) {
 
 //get files by search
 router.get("/search/:keyword", function (req, res) {
-    File.find({ name: { $regex: ".*" + req.params.keyword + ".*" } }).populate('User').populate('Deleted_user').exec(function (err, files) {
+    File.find({ name: { $regex: ".*" + req.params.keyword + ".*" ,$options:'i'} }).populate('User').populate('Deleted_user').exec(function (err, files) {
         if (err) return res.json({ message: "failed", location: "finding files by search" });
         else {
             return res.json({ message: "success", files });

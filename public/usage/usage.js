@@ -13,6 +13,7 @@ function delete_file(file_id, username_d, deleted_u = false, file_name, user_id,
     }
   }).then(data => { return data.json(); }).then(function (res) {
     if (res.message == "success") {
+      update_user_space(user_id);
       if(!b_id.includes("search")){
         document.querySelector("#" + b_id).parentElement.parentElement.style.display = "none";
         var tr_count = 0;
@@ -26,11 +27,10 @@ function delete_file(file_id, username_d, deleted_u = false, file_name, user_id,
         }
       }
       else{
-        document.querySelector("#" + b_id).parentElement.parentElement.style.display = "none";
+        location.reload();
       }
-      update_user_space(user_id);
-      $("input[type=checkbox]").prop("checked", false);
-    }
+      reset_inputs();
+        }
     else
       alert("something went wrong!");
   });
@@ -99,7 +99,7 @@ function delete_multiple(class_name, username_d, deleted_u = false, user_id) {
                   if (tr_count <= 1) {
                     current_table.parentElement.parentElement.parentElement.parentElement.style.display = "none";
                   }
-                  $("input[type=checkbox]").prop("checked", false);
+                  reset_inputs();
                 }
               });
 
@@ -152,6 +152,7 @@ function restore_file(file_id, file_name, free_space, file_size, user_id, b_id) 
     }
   }).then(data => { return data.json(); }).then(function (res) {
     if (res.message == "success") {
+      update_user_space(user_id);
       if(!b_id.includes("search")){
         document.querySelector("#" + b_id).parentElement.parentElement.style.display = "none";
         var tr_count = 0;
@@ -165,10 +166,9 @@ function restore_file(file_id, file_name, free_space, file_size, user_id, b_id) 
         }
       }
       else{
-        document.querySelector("#" + b_id).parentElement.parentElement.style.display = "none";
+        location.reload();
       }
-      update_user_space(user_id);
-      $("input[type=checkbox]").prop("checked", false);
+      reset_inputs();
     }
     else
       alert("something went wrong!");
@@ -227,7 +227,7 @@ function restore_multiple(class_name, user_id, free_space) {
                   }
                 }
               });
-              $("input[type=checkbox]").prop("checked", false);
+              reset_inputs();
             }
           });
           update_user_space(user_id);
@@ -318,13 +318,16 @@ function search(e) {
         var fileName;
         var user_id;
         var free_space;
-        res.files.forEach(function (file) {
+        var del_pre;
+        res.files.forEach(function (file, indx) {
           deletedUser = file.User ? false : true;
           user_id=deletedUser ? file.Deleted_user._id : file.User._id;
           username = deletedUser ? file.Deleted_user.username : file.User.username;
           free_space= deletedUser ? file.Deleted_user.free_space : file.User.free_space;
           restoreDisplay = file.pre_deleted ? "inline-block" : "none";
           fileName = file.name.split(' ').join('_');
+          del_pre=file.pre_deleted? "delete_file('" + file._id + "','" + username + "','" + deletedUser + "','" + fileName + "','" + user_id + "','"+indx+"-search-del-"+ username +"')"
+          : "pre_delete_file('" + file._id + "','" + user_id + "','" + fileName + "')";
           document.querySelector(".search-tbody").innerHTML += "<tr class='' name=''> <td><a href='/download_file/" + file._id + "'>" + file.name
             + "</a></td>  <td>" +
             username +
@@ -332,7 +335,7 @@ function search(e) {
             file.date+
           "</td> <td>" +
             file.size.toFixed(4) +
-            "</td>  <td><button style='margin-right:1%' onclick=delete_file('" + file._id + "','" + username + "','" + deletedUser + "','" + fileName + "','" + user_id + "','search-del-"+ username +"'); id='search-del-"+ username +"' class='btn btn-danger'>Delete</button>" +
+            "</td>  <td><button style='margin-right:1%' onclick="+del_pre+"; id='"+indx+"-search-del-"+ username +"' class='btn btn-danger'>Delete</button>" +
             "<button style='display: " + restoreDisplay + "' onclick=restore_file('" + file._id + "','" + fileName + "','" + free_space + "','" + file.size + "','" + user_id + "','search-rest-"+ username +"'); id='search-rest-"+ username +"' class='btn btn-success'>Restore</button>"
             + " </td> </tr>";
         });
@@ -368,3 +371,21 @@ function select_all(className) {
 });
 }
 
+//empty inputs and uncheck boxes
+function reset_inputs() {
+  $("#searchInput").val("");
+  $("input[type=checkbox]").prop("checked", false);
+  document.querySelector(".search-tbody").innerHTML = "";
+}
+
+//resize
+function usage_sizing(selector) {
+  var screenH=window.innerHeight;
+var leftH=screenH-document.querySelector("#head").clientHeight;
+document.querySelector(selector).style.minHeight=(leftH*0.96)+"px";
+}
+
+usage_sizing(".in-container");
+window.addEventListener("resize", function () {
+  usage_sizing(".in-container");
+});

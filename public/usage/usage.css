@@ -1,17 +1,21 @@
-
   #usage{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	margin-top: 1%;
 }
 .in-container{
 	background-color: white;
     border-radius: 1vmax;
 	padding: 1%;
 	margin: auto;
+	margin-top: 1%;
 width: 98%;
-height: 98%;
+}
+#top-bar{
+	display: flex;
+}
+#admin-free{
+	width: max-content;
 }
 details{
     margin-bottom: 1%;
@@ -23,6 +27,11 @@ text-align: center;
 display: block;
 font-size: 0.9vmax;
 margin-top: 0;
+}
+#search-bar{
+	min-width: 50%;
+	width: max-content;
+	margin: auto;
 }
 #search-bar input{
 	font-size: 1vmax;
