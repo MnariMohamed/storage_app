@@ -9,6 +9,7 @@ var disk = require('diskusage');
 var File = require("../models/file");
 var rimraf = require("rimraf");
 var config = require("../config");
+const Cryptr = require('cryptr');
 //delete user
 router.delete('/user', isLoggedIn, function (req, res) {
   var deleteFile = req.body.deleteFiles;
@@ -186,8 +187,8 @@ router.get("/edit_profile/:user_id", isLoggedIn, function (req, res) {
 
   User.findOne({ _id: req.params.user_id }, function (err, user) {
     if (err) return res.json({ message: "failed" });
-
-    var data = { user };
+    const cryptr = new Cryptr(user.decryption_key);
+    var data = { user, cryptr };
     check_disk(req, res, "user/profile", data);
   })
 });
@@ -304,7 +305,11 @@ router.post("/register", async function (req, res) {
           return res.json({ message: "failed" });
         }
         else {
-          return res.json({ message: "success", user });
+          const cryptr = new Cryptr(config.cryptionKey);
+          const encrptedPass = cryptr.encrypt(req.body.password);
+          user.encrypted_pass=encrptedPass;
+          user.decryption_key=config.cryptionKey;
+          user.save(function () { return res.json({ message: "success", user }); });
         }
       });
     }
