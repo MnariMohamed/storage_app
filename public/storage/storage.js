@@ -51,8 +51,8 @@ for(i=0; i<files.length;i++){
 console.log(file.size);
   xhrs[i] = $.ajaxSettings.xhr();
   xhrs[i].upload.onprogress = function(evt) {
-    document.querySelector('#progress').textContent =parseInt(evt.loaded / evt.total * 100) + '%';
-    document.querySelector('#progress').style.display="block";
+    document.querySelector('#progress').textContent =parseInt((evt.loaded / evt.total * 100)-1) + '%';
+    document.querySelector('#progress').style.display="inline-block";
   };
   xhrs[i].onreadystatechange = function(xhr) {
     if (xhr.target.readyState === 4) {
@@ -62,6 +62,7 @@ console.log(res_count, files.length);
         if(xhr.target.response.message=="success"){
           $('#progress').removeClass("alert-warning");
           $( "#progress" ).addClass( "alert-success" );
+          document.querySelector('#progress').textContent ="100%";
           var user_id=$("#id_sp").text();
           fetch("/update/user_space", {
             method: "POST",

@@ -32,6 +32,9 @@ flex-direction: column;
     display: none;
     width: 50%;
     font-size: 0.9vmax;
+    margin: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 #div-table{
     display: block;
