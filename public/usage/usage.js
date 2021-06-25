@@ -1,3 +1,6 @@
+$( document ).ready(function() {
+  reset_inputs();
+});
 function delete_file(file_id, username_d, deleted_u = false, file_name, user_id, b_id) {
   var userChoice = confirm("are you sure you wanna delete \r\n" + file_name + " ?");
   if (!userChoice)

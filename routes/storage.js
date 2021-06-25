@@ -17,12 +17,13 @@ router.use(fileUpload({
 
 //get files by user and name in directory, send them to client
 router.get("/storage", function (req, res) {
+    if(req.user.username=="admin") return res.redirect("/usage");
     //suggestion: to assure files are same in db and disk a solution is to run a test to filter
-
-    File.find({ User: req.user, pre_deleted: false }).sort({ date: 'desc' }).exec(function (err, Cfiles) {
-
-        res.render("storage", { the_files: Cfiles });
-
+req.body.user_id=req.user._id;
+    File.find({ User: req.user, pre_deleted: false }).sort({ date: 'desc' }).exec(async function (err, Cfiles) {
+        let data = { the_files: Cfiles };
+        var view="storage";
+        update_user_space(req, res, true, view, data);
     });
 });
 
@@ -100,6 +101,7 @@ router.post('/upload', async (req, res) => {
 //update current user freespace
 router.post("/update/user_space", function (req, res) {
     update_user_space(req, res);
+    res.json({ message: "success" });
 });
 
 
@@ -200,8 +202,9 @@ router.post("/predelete", function (req, res) {
     var user_id = req.body.user_id;
     var total_files_size = 0;
 
-    File.find({ User: user_id, _id: { $in: files_ids } }, function (err, the_files) {
+    File.find({ User: user_id, _id: { $in: files_ids }, pre_deleted: false }, function (err, the_files) {
         if (err) { console.log(err); return res.json({ message: "failed", location: "finding files" }); }
+        if(!the_files){ console.log("no files"); return res.json({message:"neutral"});}
         User.findOne({ username: "admin" }, function (err, admin) {
             if (err) { console.log(err); return res.json({ message: "failed", location: "finding admin" }); }
             var total_files_size = 0;
@@ -267,12 +270,14 @@ function update_admin(req, res) {
     });
 }
 
-function update_user_space(req, res) {
+//update user spaces, reuires user_id in req
+//suggestion: check files real existence here
+function update_user_space(req, res, respond=false, view, data) {
     User.findOne({ _id: req.body.user_id }, function (err, user) {
         if (err) { console.log(err); return res.json({ message: "failed", location: "finding user" }); }
         if (!user) { console.log("user not found"); return false; }
         File.find({ User: user, pre_deleted: false }, function (err, files) {
-            if (err || !files) { console.log(err); return res.json({ message: "failed" }); }
+            if (err || !files) { console.log(err); return false; }
             console.log(files);
             var files_size_t = 0;
             files.forEach(function (file) {
@@ -289,7 +294,10 @@ function update_user_space(req, res) {
                         });
                         admin.free_space = admin.capacity - pred_files_size_t;
                         admin.save(function () {
-                            res.json({ message: "success" });
+                            if(respond==true){
+                                return res.render(view, data)
+                            }
+                            return true;
                         });
                     });
                 });

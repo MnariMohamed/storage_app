@@ -38,6 +38,9 @@ for(i=0; i<files.length;i++){
  });
 
 }
+if(should_continue==true){
+  document.querySelector("#row-file").style.display="none";
+}
     for(i=0; i<files.length;i++){
       if(should_continue==false)
       return false;
@@ -64,18 +67,7 @@ console.log(res_count, files.length);
           $( "#progress" ).addClass( "alert-success" );
           document.querySelector('#progress').textContent ="100%";
           var user_id=$("#id_sp").text();
-          fetch("/update/user_space", {
-            method: "POST",
-            body: JSON.stringify({user_id}),
-            headers: {
-                'content-type': 'application/json'
-            }
-        }).then(data=>{return data.json();}).then(function (res) {
-          if(res.message=="success")
-          location.reload();
-          else
-          alert("something went wrong!");
-        });
+          window.location.href = "/storage";
         }
         else{
             alert("something went wrong!");
@@ -96,23 +88,6 @@ console.log(res_count, files.length);
 });
 
 
-function delete_file(file_id, username_C) {
-  var username_d=username_C;
-
-  fetch("/delete_file", {
-    method: "DELETE",
-    body: JSON.stringify({file_id, username_d}),
-    headers: {
-        'content-type': 'application/json'
-    }
-}).then(data=>{return data.json();}).then(function (res) {
-    if(res.message=="success")
-    location.reload();
-    else
-    alert("something went wrong!");
-});
-};
-
 function pre_delete_file(file_id, user_id, file_name) {
   var files_ids=[];
   files_ids.push(file_id);
@@ -129,7 +104,7 @@ function pre_delete_file(file_id, user_id, file_name) {
     }
 }).then(data=>{return data.json();}).then(function (res) {
     if(res.message=="success")
-    location.reload();
+    window.location.href = "/storage";
     else if(res.keyword=="space"){
       alert(res.desc);
           }
@@ -161,7 +136,7 @@ var user_id=$("#id_sp").text();
     }
 }).then(data=>{return data.json();}).then(function (res) {
     if(res.message=="success")
-    location.reload();
+    window.location.href = "/storage";
     else if(res.keyword=="space"){
 alert(res.desc);
     }
