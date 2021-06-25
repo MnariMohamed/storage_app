@@ -43,6 +43,7 @@
         User not updated
       </div>
       <br/>
+      <a href="/users"><button class="btn btn-warning" style="color: white;">Return</button></a>
       <button id="savebutton" type="button" class="btn btn-greeng" onclick="update_user('<%=user.username%>', '<%= allowed_storage.toFixed(4) %>', '<%=user.capacity%>')">Save</button>
       <button onclick="delete_user('<%=user.username%>')" id="delete-u" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>Delete User</button>
     </div>
