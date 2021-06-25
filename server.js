@@ -6,7 +6,8 @@ var passport = require("passport"),
   passportLocalMongoose = require("passport-local-mongoose");
 var mongoose = require('mongoose');
 var User = require("./models/user");
-var config = require("./config");
+var fs = require('fs');
+let config = require('/cfg/storage_config.json');
 
 /****** mongoose config */
 mongoose.connect('mongodb://localhost/storage', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -62,6 +63,19 @@ app.use(isLoggedIn, usageRoutes);
 app.use(isLoggedIn, storageManager);
 
 
+
+
+
+//initial functions
+fs.access(config.folder_path, function(error) {
+  if (error) {
+    console.log("Directory does not exist.");
+    fs.mkdir(config.folder_path, function (err) {
+        if(err) return console.log("something wrong with folder path");
+        else console.log("folder created");
+    })
+  }
+});
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated())

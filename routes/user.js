@@ -8,7 +8,7 @@ var fetch = require("node-fetch");
 var disk = require('diskusage');
 var File = require("../models/file");
 var rimraf = require("rimraf");
-var config = require("../config");
+let config = require('/cfg/storage_config.json');
 const Cryptr = require('cryptr');
 //delete user
 router.delete('/user', isLoggedIn, function (req, res) {

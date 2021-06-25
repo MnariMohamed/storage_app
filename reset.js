@@ -6,7 +6,7 @@ var express = require("express"),
 var mongoose = require('mongoose');
 var fetch = require("node-fetch");
 var rimraf = require("rimraf");
-var config = require("./config");
+let config = require('/cfg/storage_config.json');
 
 /****** mongoose config */
 mongoose.connect('mongodb://localhost/storage', { useNewUrlParser: true, useUnifiedTopology: true });

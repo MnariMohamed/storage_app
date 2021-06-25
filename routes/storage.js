@@ -5,7 +5,7 @@ var fs = require('fs');
 const fileUpload = require('express-fileupload');
 var User = require("../models/user");
 var Deleted_user = require("../models/deleted_user");
-var config = require("../config");
+let config = require('/cfg/storage_config.json');
 
 router.use(fileUpload({
     useTempFiles: true,

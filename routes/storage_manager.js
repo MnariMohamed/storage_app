@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router({ mergeParams: true });
-var config = require("../config");
+let config = require('/cfg/storage_config.json');
 
 //get storage manager page
 router.get("/storage_manager", function (req, res) {

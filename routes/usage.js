@@ -4,7 +4,7 @@ var File = require("../models/file");
 var User = require("../models/user");
 var Deleted_user = require("../models/deleted_user");
 var rimraf = require("rimraf");
-var config = require("../config");
+let config = require('/cfg/storage_config.json');
 var fs = require('fs');
 
 
