@@ -9,7 +9,8 @@ var config = require("../config");
 
 router.use(fileUpload({
     useTempFiles: true,
-    createParentPath: true
+    createParentPath: true,
+    tempFileDir : '/tmp/'
 }));
 
 

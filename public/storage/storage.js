@@ -29,6 +29,9 @@ for(i=0; i<files.length;i++){
   $( "#progress" ).removeClass( "alert-success" );
   $( "#progress" ).addClass( "alert-danger" );
   alert("duplicate file name! change the name of '"+res.file_name+"'");
+  $('#progress').removeClass("alert-danger");
+  $( "#progress" ).removeClass( "alert-success" );
+  $( "#progress" ).addClass( "alert-warning" );
   should_continue=false;
   return false;
 } 
