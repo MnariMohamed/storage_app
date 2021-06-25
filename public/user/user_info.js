@@ -3,6 +3,15 @@ document.querySelector("#confirm-pass").addEventListener("click", function () {
     let new_pass = $("#inputPassword").val();
     let confirm_pass = $("#inputConfirm").val();
     var username=$("#confirm-pass").attr("data");
+
+    if(!username.length || !password.length || !new_pass.length || !confirm_pass.length){
+        $("#pass-failed").hide();
+        $("#pass-changed").hide(1000);
+        $("#pass-failed").show(1000);
+         alert("please check your fields");
+         return false;
+       }
+
     if (new_pass != confirm_pass) {
         $("#pass-failed").hide();
         $("#pass-changed").hide(1000);

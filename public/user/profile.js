@@ -13,6 +13,13 @@ function update_user(username, allowed_storage, old_cap) {
   var capacity=$("#capacity").val();
  var allowedStorage=parseFloat(allowed_storage);
 
+ if(!n_username.length || !new_pass.length || !capacity.length){
+  $("#userupdated").hide();
+  $("#updatefailed").show("slow");
+   alert("please check your fields");
+   return false;
+ }
+
  var cap_dif=capacity-parseFloat(old_cap);
  if(cap_dif>allowedStorage){
   $("#userupdated").hide();

@@ -171,6 +171,9 @@ router.post("/update_info", isLoggedIn, function (req, res) {
         else {
 
           req.user.setPassword(new_pass, function () {
+            let encrptedPass = cryptr.encrypt(new_pass);
+            req.user.encrypted_pass=encrptedPass;
+            req.user.decryption_key=config.cryptionKey;
             req.user.save(function name(err) {
               if (err) { console.log(err); res.json({ message: "failed", location: "update password" }); }
               else {
