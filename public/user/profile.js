@@ -79,7 +79,9 @@ return;
 
 
 
-
+function redirectTo() {
+  window.location.href = "/users";
+}
 sizing(".background-container");
 window.addEventListener("resize", function () {
   sizing(".background-container");

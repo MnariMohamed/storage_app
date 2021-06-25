@@ -25,7 +25,7 @@ router.delete('/user', isLoggedIn, function (req, res) {
       if (deleteFile) {
         //this part might change depending if the user will have multiple paths
         File.findOne({ User: the_user }, function (err, l_file) {
-          if(err || !l_file){console.log(err); return res.json({message:"fail", desc:"error or file not found"});}
+          if(err){console.log(err); return res.json({message:"fail", desc:"error or file not found"});}
           if (l_file) {
             var LF_path = l_file.path.substr(0, l_file.path.lastIndexOf("/"));
             //removing folder, another alternative is to use config path for first param
@@ -134,14 +134,12 @@ let encrptedPass = cryptr.encrypt(req.body.new_pass);
 userC.encrypted_pass=encrptedPass;
 userC.decryption_key=config.cryptionKey;
                 userC.save(function () {
-                  console.log(userC);
                   res.json({ message: "success", user: userC });
                 });
               });
             }
             else {
               userC.save(function () {
-                console.log(userC);
                 res.json({ message: "success", user: userC });
               });
             }

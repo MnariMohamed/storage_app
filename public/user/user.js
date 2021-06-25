@@ -33,3 +33,7 @@ if(res.message=="success"){
         });
     });
 });
+
+function redirectTo() {
+    window.location.href = "/users";
+  }
