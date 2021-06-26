@@ -284,6 +284,14 @@ router.get("/admin", function (req, res) {
   })
 });
 
+//get admin info, add getting any user too if needed
+router.get("/user_info/:user_id", function (req, res) {
+  User.findOne({_id:req.params.user_id}, function (err, user) {
+    if(err){ console.log(err); return res.json({message:"fail"}); }
+    res.json({message:"success", user})
+  })
+});
+
 
 
 /*****register routes*/

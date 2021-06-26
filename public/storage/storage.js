@@ -66,9 +66,16 @@ console.log(res_count, files.length);
           $('#progress').removeClass("alert-warning");
           $( "#progress" ).addClass( "alert-success" );
           document.querySelector('#progress').textContent ="100%";
-          var user_id=$("#id_sp").text();
-          window.location.href = "/storage";
-        }
+          fetch("/update/user_space", {
+            method: "POST",
+            body: JSON.stringify({ user_id }),
+            headers: {
+              'content-type': 'application/json'
+            }
+          }).then(data => { return data.json(); }).then(function (res) {
+            if(res.message=="success"){ window.location.href = "/storage"; }
+          });
+                        }
         else{
             alert("something went wrong!");
             $('#progress').removeClass("alert-warning");

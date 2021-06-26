@@ -358,8 +358,10 @@ function update_user_space(user_id) {
       'content-type': 'application/json'
     }
   }).then(data => { return data.json(); }).then(function (res) {
-    if (res.message == "success")
+    if (res.message == "success"){
+      check_admin();
       return true;
+    }
     else
       alert("something went wrong!");
   });
@@ -381,6 +383,16 @@ function reset_inputs() {
   document.querySelector(".search-tbody").innerHTML = "";
 }
 
+//get admin freespace
+function check_admin() {
+  var admin_id=$("#admin_id").text();
+  fetch("/user_info/"+admin_id).then(data => { return data.json(); }).then(function (res) {
+    if(res.message=="success"){
+      $("#admin-free").text("My Free space: "+res.user.free_space.toFixed(2)+" Gb")
+    }
+  });
+}
+
 //resize
 function usage_sizing(selector) {
   var screenH=window.innerHeight;
@@ -388,6 +400,8 @@ var leftH=screenH-document.querySelector("#head").clientHeight;
 document.querySelector(selector).style.minHeight=(leftH*0.96)+"px";
 }
 
+
+//css resize
 usage_sizing(".in-container");
 window.addEventListener("resize", function () {
   usage_sizing(".in-container");
