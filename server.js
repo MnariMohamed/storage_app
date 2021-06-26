@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var User = require("./models/user");
 var fs = require('fs');
 let config = require('/cfg/storage_config.json');
+var fetch = require("node-fetch");
 
 /****** mongoose config */
 mongoose.connect('mongodb://localhost/storage', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -76,6 +77,23 @@ fs.access(config.folder_path, function(error) {
     })
   }
 });
+
+//check if admin pass has changed in config
+function check_admin_pass() {
+  fetch('http://localhost:'+config.port+'/admin').then((res0) => { return res0.json(); })
+    .then(function (resp) {
+      if (resp.message != "exists") {
+        fetch('http://localhost:'+config.port+'/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username: "admin", password: config.password })
+        }).then((res1) => { console.log("admin created"); res.render("login"); });
+      }
+    });
+}
+check_admin_pass();
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated())

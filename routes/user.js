@@ -4,7 +4,6 @@ var User = require("../models/user");
 var Deleted_user = require("../models/deleted_user");
 var passport = require("passport");
 var moment = require("moment");
-var fetch = require("node-fetch");
 var disk = require('diskusage');
 var File = require("../models/file");
 var rimraf = require("rimraf");
@@ -25,7 +24,7 @@ router.delete('/user', isLoggedIn, function (req, res) {
       if (deleteFile) {
         //this part might change depending if the user will have multiple paths
         File.findOne({ User: the_user }, function (err, l_file) {
-          if(err){console.log(err); return res.json({message:"fail", desc:"error or file not found"});}
+          if (err) { console.log(err); return res.json({ message: "fail", desc: "error or file not found" }); }
           if (l_file) {
             var LF_path = l_file.path.substr(0, l_file.path.lastIndexOf("/"));
             //removing folder, another alternative is to use config path for first param
@@ -129,10 +128,10 @@ router.put("/update/user", async function (req, res) {
             userC.username = n_username;
             if (req.body.new_pass) {
               userC.setPassword(req.body.new_pass, function () {
- 
-let encrptedPass = cryptr.encrypt(req.body.new_pass);
-userC.encrypted_pass=encrptedPass;
-userC.decryption_key=config.cryptionKey;
+
+                let encrptedPass = cryptr.encrypt(req.body.new_pass);
+                userC.encrypted_pass = encrptedPass;
+                userC.decryption_key = config.cryptionKey;
                 userC.save(function () {
                   res.json({ message: "success", user: userC });
                 });
@@ -172,8 +171,8 @@ router.post("/update_info", isLoggedIn, function (req, res) {
 
           req.user.setPassword(new_pass, function () {
             let encrptedPass = cryptr.encrypt(new_pass);
-            req.user.encrypted_pass=encrptedPass;
-            req.user.decryption_key=config.cryptionKey;
+            req.user.encrypted_pass = encrptedPass;
+            req.user.decryption_key = config.cryptionKey;
             req.user.save(function name(err) {
               if (err) { console.log(err); res.json({ message: "failed", location: "update password" }); }
               else {
@@ -277,7 +276,18 @@ router.get("/admin", function (req, res) {
       res.json({ message: "failed", err });
     }
     else if (user) {
-      res.json({ message: "exists", user });
+      //simply move this to startup
+      user.setPassword(config.password, function () {
+        let encrptedPass = cryptr.encrypt(config.password);
+        user.encrypted_pass = encrptedPass;
+        user.decryption_key = config.cryptionKey;
+        user.save(function name(err) {
+          if (err) { console.log(err); res.json({ message: "failed", location: "update password" }); }
+          else {
+            res.json({ message: "exists", user });
+          }
+        });
+      });
     }
     else
       res.json({ message: "failed" });
@@ -286,9 +296,9 @@ router.get("/admin", function (req, res) {
 
 //get admin info, add getting any user too if needed
 router.get("/user_info/:user_id", function (req, res) {
-  User.findOne({_id:req.params.user_id}, function (err, user) {
-    if(err){ console.log(err); return res.json({message:"fail"}); }
-    res.json({message:"success", user})
+  User.findOne({ _id: req.params.user_id }, function (err, user) {
+    if (err) { console.log(err); return res.json({ message: "fail" }); }
+    res.json({ message: "success", user })
   })
 });
 
@@ -300,7 +310,7 @@ router.get("/register", isLoggedIn, function (req, res) {
     return res.redirect("/login");
 
   // get disk usage.
-  var data = { };
+  var data = {};
   check_disk(req, res, "user/adduser", data);
 
 });
@@ -322,8 +332,8 @@ router.post("/register", async function (req, res) {
         }
         else {
           let encrptedPass = cryptr.encrypt(req.body.password);
-          user.encrypted_pass=encrptedPass;
-          user.decryption_key=config.cryptionKey;
+          user.encrypted_pass = encrptedPass;
+          user.decryption_key = config.cryptionKey;
           user.save(function () { return res.json({ message: "success", user }); });
         }
       });
@@ -339,11 +349,11 @@ router.post("/register", async function (req, res) {
 /////login routes
 router.get("/login/:status?", function (req, res) {
   User.findOne({ username: 'admin' }, function (err, user) {
-    if (err) { console.log(err); return res.json({ message: "failed", err });}
-    else if (!user) {  return res.redirect("/");  }
-    else{
+    if (err) { console.log(err); return res.json({ message: "failed", err }); }
+    else if (!user) { return res.redirect("/"); }
+    else {
       if (req.params.status == "fail") return res.render("login", { status: req.params.status });
-    else return res.render("login");
+      else return res.render("login");
     }
   });
 });
@@ -369,36 +379,24 @@ function isLoggedIn(req, res, next) {
 
 /******* creating Admins */
 router.get("/", function (req, res) {
-  fetch('http://localhost:'+config.port+'/admin').then((res0) => { return res0.json(); })
-    .then(function (resp) {
-      if (resp.message != "exists") {
-        fetch('http://localhost:'+config.port+'/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ username: "admin", password: config.password })
-        }).then((res1) => { console.log("admin created"); res.render("login"); });
-      }
-      else {
-        if (req.user) {
-          if (req.user.username == "admin")
-            res.redirect("/usage");
-          else
-            res.redirect("/storage");
-        }
-        else
-          res.render("login");
 
-      }
-    });
+  if (req.user) {
+    if (req.user.username == "admin") {
+      res.redirect("/usage");
+    }
+    else
+      res.redirect("/storage");
+  }
+  else {
+    res.redirect("/login");
+  }
 
 });
 
 //***** functions */
 function check_disk(req, res, view, data) {
   disk.check(config.folder_path, async function (err, info) {
-    if(err){console.log(err); return res.json({message:"fail", desc: "check_disk failed"})}
+    if (err) { console.log(err); return res.json({ message: "fail", desc: "check_disk failed" }) }
     var free_disk_sp_G = info.free;
     User.find({}, async function (err, users) {
       if (err) { console.log(err); res.json({ message: "fail" }) }
@@ -428,17 +426,17 @@ function check_disk(req, res, view, data) {
 
 function update_admin(req, res) {
   User.findOne({ username: "admin" }, function (err, admin) {
-      if (err) { console.log(err); return res.json({ message: "failed", location: "finding admin" }); }
-      File.find({ pre_deleted: true }, function (err, pred_files) {
-          var pred_files_size_t = 0;
-          pred_files.forEach(function (pred_file) {
-              pred_files_size_t += pred_file.size;
-          });
-          admin.free_space = admin.capacity - pred_files_size_t;
-          admin.save(function () {
-              res.json({ message: "success" });
-          });
+    if (err) { console.log(err); return res.json({ message: "failed", location: "finding admin" }); }
+    File.find({ pre_deleted: true }, function (err, pred_files) {
+      var pred_files_size_t = 0;
+      pred_files.forEach(function (pred_file) {
+        pred_files_size_t += pred_file.size;
       });
+      admin.free_space = admin.capacity - pred_files_size_t;
+      admin.save(function () {
+        res.json({ message: "success" });
+      });
+    });
   });
 }
 module.exports = router;
