@@ -6,7 +6,10 @@ var Deleted_user = require("../models/deleted_user");
 var rimraf = require("rimraf");
 let config = require('/cfg/storage_config.json');
 var fs = require('fs');
+var myFunctions=require("../shared_data/functions");
 
+//defining shared funcs
+let update_user_space=myFunctions.update_user_space;
 
 router.get("/usage", function (req, res) {
     if (req.user.username != "admin")
@@ -108,8 +111,11 @@ router.put("/restore/file", function (req, res) {
     var files_ids = [];
     files_ids = req.body.files_ids;
     //turn it to multiple later
-    File.findOne({ _id: { $in: files_ids } }, function (err, file) {
-        if (err) return res.json({ message: "fail", location: "finding file" });
+    File.findOne({ _id: { $in: files_ids } }, async function (err, file) {
+        if (err || !file) return res.json({ message: "fail", location: "finding file" });
+        req.body.user_id=file.User;
+        const result=await update_user_space(req, res);
+        if(result.free_space<file.size){ return res.json({ message: "fail", keyword:"space", desc: "user space expired, only "+result.free_space.toFixed(2)+" Gb left" });}
         User.findOne({ _id: file.User }, function (err, user) {
             if (err) return res.json({ message: "fail", location: "finding user" });
             // if (user.free_space < file.size) return res.json({ message: "fail", desc: "user space full" });

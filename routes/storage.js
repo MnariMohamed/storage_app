@@ -6,6 +6,9 @@ const fileUpload = require('express-fileupload');
 var User = require("../models/user");
 var Deleted_user = require("../models/deleted_user");
 let config = require('/cfg/storage_config.json');
+var myFunctions=require("../shared_data/functions");
+
+let update_user_space=myFunctions.update_user_space;
 
 router.use(fileUpload({
     useTempFiles: true,
@@ -51,12 +54,16 @@ router.post('/upload', async (req, res) => {
                 message: 'Error: No file uploaded'
             });
         } else {
-
+            console.log("ongoing");
+            let uploadedFile = req.files.uploadedFile;
+            var name_B_D = uploadedFile.name.substring(0, uploadedFile.name.indexOf("."));
+            var name_A_D = uploadedFile.name.substring(uploadedFile.name.indexOf(".") + 1);
+            var size_G = uploadedFile.size / Math.pow(1000, 3);
+            req.body.user_id=req.user._id;
+const result=await update_user_space(req, res);
+if(result.free_space<size_G)
+return res.json({ message: "failed", desc: "space run out" });
             File.countDocuments({}, function (err, count) {
-                let uploadedFile = req.files.uploadedFile;
-                var name_B_D = uploadedFile.name.substring(0, uploadedFile.name.indexOf("."));
-                var name_A_D = uploadedFile.name.substring(uploadedFile.name.indexOf(".") + 1);
-                var size_G = uploadedFile.size / Math.pow(1000, 3);
                 var modified_name = name_B_D + "_" + count + "_." + name_A_D;
                 var n_file = { name: uploadedFile.name, User: req.user, size: size_G, path: config.folder_path + req.user.folder_name + "/" + uploadedFile.name };
                 if (fs.existsSync(config.folder_path + req.user.folder_name + "/" + uploadedFile.name)) {
@@ -69,7 +76,7 @@ router.post('/upload', async (req, res) => {
                         else {
                             File.create(n_file, function (err, fileC) {
 
-                                if (err) { console.log(err); res.json({ message: "failed", err }) }
+                                if (err) { console.log(err); res.json({ message: "failed" }) }
                                 else {
 
                                     res.json({
@@ -269,44 +276,5 @@ function update_admin(req, res) {
     });
 }
 
-//update user spaces, reuires user_id in req
-//suggestion: check files real existence here
-function update_user_space(req, res, respond=false, view, data={}, resJson=false) {
-    User.findOne({ _id: req.body.user_id }, function (err, user) {
-        if (err) { console.log(err); return res.json({ message: "failed", location: "finding user" }); }
-        if (!user) { console.log("user not found"); return false; }
-        File.find({ User: user, pre_deleted: false }, function (err, files) {
-            if (err || !files) { console.log(err); return false; }
-            console.log(files);
-            var files_size_t = 0;
-            files.forEach(function (file, f_idx, f_arr) {
-                files_size_t += file.size;
-            });
-            user.free_space = user.capacity - files_size_t;
-            user.save(function () {
-                User.findOne({ username: "admin" }, function (err, admin) {
-                    if (err) { console.log(err); return res.json({ message: "failed", location: "finding admin" }); }
-                    File.find({ pre_deleted: true }, function (err, pred_files) {
-                        var pred_files_size_t = 0;
-                        pred_files.forEach(function (pred_file) {
-                            pred_files_size_t += pred_file.size;
-                        });
-                        admin.free_space = admin.capacity - pred_files_size_t;
-                        admin.save(function () {
-                            if(respond==true){
-                                return res.render(view, data)
-                            }
-                            else if(resJson==true){
-                                    return res.json({message:"success" ,data})
-                            }
-                            else
-                            return true;
-                        });
-                    });
-                });
-            });
-        });
-    });
-}
 
 module.exports = router;

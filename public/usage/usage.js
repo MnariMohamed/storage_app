@@ -138,7 +138,7 @@ function restore_file(file_id, file_name, free_space, file_size, user_id, b_id) 
   var file_size = parseFloat(file_size);
 
   if (free_space < file_size) {
-    alert("!* the user has no enough space *!");
+    alert("!* the user has no enough space *! try refreshing the page for new data");
     return false;
   }
   var userChoice = confirm("are you sure you wanna restore \r\n" + file_name + " ?");
@@ -173,8 +173,17 @@ function restore_file(file_id, file_name, free_space, file_size, user_id, b_id) 
       }
       reset_inputs();
     }
-    else
-      alert("something went wrong!");
+    else{
+      if(res.keyword){
+        if(res.keyword=="space"){
+          alert(res.desc);
+        }
+      }
+      else{
+        alert("something went wrong!");
+        location.reload();
+      }
+    }
   });
 }
 
@@ -192,7 +201,7 @@ function restore_multiple(class_name, user_id, free_space) {
     }
   });
   if (free_space < total_size) {
-    alert("!* the user has no enough space *!");
+    alert("!* the user has no enough space *! try refreshing the page for new data");
     return false;
   }
 
@@ -236,8 +245,17 @@ function restore_multiple(class_name, user_id, free_space) {
           update_user_space(user_id);
         }
 
-        else
-          alert("something went wrong!");
+        else{
+          if(res.keyword){
+            if(res.keyword=="space"){
+              alert(res.desc);
+            }
+          }
+          else{
+            alert("something went wrong!");
+            location.reload();
+          }
+        }
       }
 
     });

@@ -322,7 +322,6 @@ router.post("/register", async function (req, res) {
   date_now = date_now.getTime();
 
   const result = await check_disk(req, res, null, null, true);
-  console.log(result);
 if(result<req.body.capacity)
 return res.json({ message: "failed" });
 
