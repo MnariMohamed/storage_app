@@ -36,10 +36,15 @@ for(i=0; i<files.length;i++){
   return false;
 } 
  });
-
 }
+
+//if everything is ok to upload
 if(should_continue==true){
   document.querySelector("#row-file").style.display="none";
+
+  $(window).bind('beforeunload', async function(){
+    return "Changes you made may not be saved.";
+  });
 }
     for(i=0; i<files.length;i++){
       if(should_continue==false)
@@ -66,6 +71,7 @@ console.log(res_count, files.length);
           $('#progress').removeClass("alert-warning");
           $( "#progress" ).addClass( "alert-success" );
           document.querySelector('#progress').textContent ="100%";
+          $(window).unbind('beforeunload');
           fetch("/update/user_space", {
             method: "POST",
             body: JSON.stringify({ user_id }),

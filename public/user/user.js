@@ -21,7 +21,9 @@ $(document).ready(function(){
 if(res.message=="failed"){
     $("#userfailed").hide();
     $("#useradded").hide(1000);
-    $("#userfailed").show(1000);
+    $("#userfailed").show(500, function () {
+        location.reload();
+    });
 }
 if(res.message=="success"){
     $("#useradded").hide();

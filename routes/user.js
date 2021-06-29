@@ -318,8 +318,13 @@ router.get("/register", isLoggedIn, function (req, res) {
 
 
 router.post("/register", async function (req, res) {
-  var date_now = new Date(Date.now());
-  date_now = date_now.toUTCString();
+  var date_now = new Date();
+  date_now = date_now.getTime();
+
+  const result = await check_disk(req, res, null, null, true);
+  console.log(result);
+if(result<req.body.capacity)
+return res.json({ message: "failed" });
 
   Deleted_user.countDocuments({ username: req.body.username }, function (err, count) {
     console.log(count);
@@ -394,8 +399,9 @@ router.get("/", function (req, res) {
 });
 
 //***** functions */
-function check_disk(req, res, view, data) {
-  disk.check(config.folder_path, async function (err, info) {
+function check_disk(req, res, view, data, await_allowed_val=false) {
+  return new Promise(resolve => {
+    disk.check(config.folder_path, async function (err, info) {
     if (err) { console.log(err); return res.json({ message: "fail", desc: "check_disk failed" }) }
     var free_disk_sp_G = info.free;
     User.find({}, async function (err, users) {
@@ -412,16 +418,21 @@ function check_disk(req, res, view, data) {
           total_users_storage += t_user.capacity;
         });
         total_users_storage = total_users_storage * Math.pow(1000, 3);
-        console.log(used_users_storage, total_users_storage);
         original_free_disk = free_disk_sp_G - used_users_storage;
         allowed_storage = original_free_disk - total_users_storage;
         allowed_storage = allowed_storage / Math.pow(1000, 3);
-        data["allowed_storage"] = allowed_storage;
-        data["free_disk_sp_G"] = free_disk_sp_G;
-        res.render(view, data);
+        if(await_allowed_val){
+            resolve(allowed_storage);
+                }
+        else{
+          data["allowed_storage"] = allowed_storage;
+          data["free_disk_sp_G"] = free_disk_sp_G;
+                  res.render(view, data);
+        }
       }
     });
   });
+});
 }
 
 function update_admin(req, res) {
